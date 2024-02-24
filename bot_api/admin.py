@@ -2,6 +2,16 @@ from django.contrib import admin
 from . import models
 
 
+class ServiceWorkTimeInline(admin.TabularInline):
+    model = models.ServiceWorkTime
+    extra = 1
+
+
+class MarketWorkTimeInline(admin.TabularInline):
+    model = models.MarketWorkTime
+    extra = 1
+
+
 @admin.register(models.TgUser)
 class TgUserAdmin(admin.ModelAdmin):
     list_display = ['user_id', 'username', 'is_active', 'language']
@@ -24,6 +34,7 @@ class ProfessionalAdmin(admin.ModelAdmin):
 class ServiceAdmin(admin.ModelAdmin):
     list_display = ['id', 'fullname', 'region', 'professional', 'price']
     list_display_links = ['fullname', 'region']
+    inlines = [ServiceWorkTimeInline]
 
 
 @admin.register(models.Product)
@@ -36,6 +47,7 @@ class ProductAdmin(admin.ModelAdmin):
 class MarketAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'product']
     list_display_links = ['name', 'product']
+    inlines = [MarketWorkTimeInline]
 
 
 @admin.register(models.Rating)

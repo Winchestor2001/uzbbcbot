@@ -3,6 +3,13 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Ignore Django migrations files
+**/migrations/*.py
+**/migrations/*.pyc
+
+# Exclude migrations/__init__.py
+!**/migrations/__init__.py
+
 # C extensions
 *.so
 

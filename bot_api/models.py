@@ -1,19 +1,27 @@
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 
 class Region(models.Model):
     name = models.CharField(max_length=100)
+    is_visible = models.BooleanField(default=True)
 
     def __str__(self):
         return self.name
 
 
 class TgUser(models.Model):
+    LANGUAGES = (
+        ('uz', 'uz'),
+        ('ru', 'ru'),
+        ('en', 'en'),
+    )
     user_id = models.BigIntegerField(primary_key=True)
     username = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=50)
+    phone_number = models.CharField(max_length=50, blank=True, null=True)
     is_active = models.BooleanField(default=False)
-    language = models.CharField(max_length=10)
+    language = models.CharField(max_length=10, choices=LANGUAGES, default='uz')
 
     def __str__(self):
         return f"{self.user_id} - {self.username}"
@@ -44,12 +52,30 @@ class Product(models.Model):
         return self.name
 
 
+class ServiceWorkTime(models.Model):
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
+    from_date = models.TimeField()
+    to_date = models.TimeField()
+
+    def __str__(self):
+        return self.service
+
+
 class Market(models.Model):
     name = models.CharField(max_length=200)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
 
     def __str__(self):
         return self.name
+
+
+class MarketWorkTime(models.Model):
+    service = models.ForeignKey(Market, on_delete=models.CASCADE)
+    from_date = models.TimeField()
+    to_date = models.TimeField()
+
+    def __str__(self):
+        return self.service
 
 
 class Rating(models.Model):
