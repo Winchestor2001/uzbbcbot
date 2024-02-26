@@ -1,13 +1,32 @@
+from aiogram.filters.callback_data import CallbackData
 from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
 from utils.bot_context import languages
 
 
-async def choose_language_btn(lang: str):
-    btn = InlineKeyboardMarkup(row_width=2)
-    btn.add(
-        InlineKeyboardButton(text="🇺🇿 UZ", callback_data="lang:uz"),
-        InlineKeyboardButton(text="🇷🇺 RU", callback_data="lang:ru"),
-        InlineKeyboardButton(text="🇺🇸 EN", callback_data="lang:en"),
+class Lang(CallbackData, prefix='lang'):
+    lang: str
+
+
+async def choose_language_btn():
+    btn = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(
+                    text="🇺🇿 UZ",
+                    callback_data=Lang(lang='uz').pack(),
+                ),
+                InlineKeyboardButton(
+                    text="🇷🇺 RU",
+                    callback_data=Lang(lang='ru').pack(),
+                ),
+            ],
+            [
+                InlineKeyboardButton(
+                    text="🇺🇸 EN",
+                    callback_data=Lang(lang='en').pack(),
+                )
+            ]
+        ]
     )
     return btn
 

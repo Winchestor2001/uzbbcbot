@@ -1,15 +1,26 @@
-from aiogram import Dispatcher
-from aiogram.types import *
+from aiogram import F
+from aiogram.filters import CommandStart
+from aiogram.fsm.context import FSMContext
+from aiogram.types import Message, CallbackQuery
+from aiogram.enums.content_type import ContentType
 
-from filters import IsActiveFilter
 from keyboards.default.user_btns import start_command_btn
 from keyboards.inline.user_btns import choose_language_btn
 from loader import dp
 from utils.bot_context import languages
 
-from telegram_bot.utils.api_connections import update_user_language
+from states.AllStates import UserStates
+from utils.api_connections import update_user_language
+from aiogram import Router
+
+from telegram_bot.keyboards.default.user_btns import send_phone_number_btn
+from telegram_bot.keyboards.inline.user_btns import Lang
+from telegram_bot.utils.api_connections import send_verify_code, get_regions
+
+user_route = Router()
 
 
+@user_route.message(CommandStart())
 async def start_command(message: Message):
     lang = message.from_user.language_code
     context = languages[lang]['start_command']
@@ -17,28 +28,55 @@ async def start_command(message: Message):
     await message.answer(context, reply_markup=btn)
 
 
-async def choose_language_handler(message: Message):
-    lang = message.from_user.language_code
-    btn = await choose_language_btn(lang)
+async def choose_language_handler(message: Message, state: FSMContext, data: dict):
+    btn = await choose_language_btn()
+    await state.update_data(data=data)
     await message.answer("Tilni tanlang\n\nВыберите язык\n\nChoose language", reply_markup=btn)
 
 
-async def selected_language_callback(c: CallbackQuery):
+@user_route.callback_query(Lang.filter())
+async def selected_language_callback(c: CallbackQuery, state: FSMContext):
     lang = c.data.split(':')[1]
+    data = (await state.get_data())
     await update_user_language(
         user_id=c.from_user.id,
         language=lang
     )
     await c.message.delete()
-    context = languages[lang]['start_command']
-    btn = await start_command_btn(lang)
-    await c.message.answer(context, reply_markup=btn)
+    if data['is_active']:
+        context = languages[lang]['start_command']
+        btn = await start_command_btn(lang)
+        await c.message.answer(context, reply_markup=btn)
+    else:
+        btn = await send_phone_number_btn(lang)
+        await c.message.answer(languages[lang]['get_phone_number_handler'], reply_markup=btn)
+        await state.set_state(UserStates.phone_number)
 
 
-def register_users_py(dp: Dispatcher):
-    dp.register_message_handler(start_command, IsActiveFilter(), commands=['start'])
-    dp.register_message_handler(choose_language_handler, commands=['lang'])
+@user_route.message(UserStates.phone_number, F.contact)
+async def user_phone_number_state(message: Message, state: FSMContext):
+    lang = (await state.get_data())['lang']
+    if message.contact:
+        phone_number = message.contact.phone_number
+    else:
+        phone_number = message.text
 
-    dp.register_callback_query_handler(selected_language_callback, text_contains='lang')
+    code = await send_verify_code(
+        user_id=message.from_user.id,
+        phone_number=phone_number
+    )
+    await state.update_data(code=code['code'])
+    await message.answer(languages[lang]['verify_code_text'])
+    await state.set_state(UserStates.verify_code)
 
 
+@user_route.message(UserStates.verify_code, F.text)
+async def user_verify_code_state(message: Message, state: FSMContext):
+    code = message.text
+    data = await state.get_data()
+    lang = data['lang']
+    regions = await get_regions()
+    if int(code) == data['code']:
+        await message.answer(languages[lang]['choose_region_handler'])
+    else:
+        await message.answer(languages[lang]['wrong_code_text'])

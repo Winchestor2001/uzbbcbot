@@ -29,3 +29,22 @@ async def update_user_language(user_id: int, language: str):
                 return await response.json()
             else:
                 return None
+
+
+async def send_verify_code(user_id: int, phone_number: str):
+    data = {"user_id": user_id, "phone_number": phone_number}
+    async with ClientSession() as session:
+        async with session.post(f"{API_URL}/send_verify/", data=data) as response:
+            if response.status == 201:
+                return await response.json()
+            else:
+                return False
+
+
+async def get_regions():
+    async with ClientSession() as session:
+        async with session.get(f"{API_URL}/regions/") as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return []

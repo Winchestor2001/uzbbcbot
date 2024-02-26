@@ -16,6 +16,7 @@ class TgUser(models.Model):
         ('uz', 'uz'),
         ('ru', 'ru'),
         ('en', 'en'),
+        ('null', 'null'),
     )
     user_id = models.BigIntegerField(primary_key=True)
     username = models.CharField(max_length=100)
@@ -85,4 +86,12 @@ class Rating(models.Model):
 
     def __str__(self):
         return f"{self.tg_user} - {self.rating}"
+
+
+class PhoneVerifyCode(models.Model):
+    tg_user = models.ForeignKey(TgUser, on_delete=models.CASCADE)
+    code = models.IntegerField()
+
+    def __str__(self):
+        return f"{self.tg_user} - {self.code}"
 

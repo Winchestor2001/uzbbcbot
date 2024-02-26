@@ -55,3 +55,8 @@ class RatingAdmin(admin.ModelAdmin):
     list_display = ['id', 'tg_user', 'rating', 'comment']
     list_display_links = ['tg_user']
 
+
+@admin.register(models.PhoneVerifyCode)
+class PhoneVerifyCodeAdmin(admin.ModelAdmin):
+    list_display = ['id', 'tg_user', 'code']
+    list_display_links = ['tg_user']
