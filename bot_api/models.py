@@ -23,6 +23,7 @@ class TgUser(models.Model):
     phone_number = models.CharField(max_length=50, blank=True, null=True)
     is_active = models.BooleanField(default=False)
     language = models.CharField(max_length=10, choices=LANGUAGES, default='uz')
+    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user_id} - {self.username}"

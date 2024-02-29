@@ -11,8 +11,11 @@ async def start_command_btn(lang: str):
                 KeyboardButton(text=languages[lang]["reply_button"]["product_text"])
             ],
             [
-                KeyboardButton(text=languages[lang]["reply_button"]["about_text"]),
                 KeyboardButton(text=languages[lang]["reply_button"]["admin_text"]),
+                KeyboardButton(text=languages[lang]["reply_button"]["profile_text"]),
+            ],
+            [
+                KeyboardButton(text=languages[lang]["reply_button"]["about_text"]),
             ]
         ]
     )
@@ -29,5 +32,19 @@ async def send_phone_number_btn(lang: str):
         ]
     )
     return btn
+
+
+async def regions_btn(regions: list):
+    btn = ReplyKeyboardMarkup(
+        resize_keyboard=True,
+        keyboard=[
+            [
+                KeyboardButton(text=item['name'])
+            ]
+            for item in regions
+        ]
+    )
+    return btn
+
 
 

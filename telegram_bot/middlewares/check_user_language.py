@@ -34,5 +34,4 @@ class SetUserLanguageMiddleware(BaseMiddleware):
         data.update(custom_data)
         if not user['is_active'] and current_state is None:
             return await choose_language_handler(event, state, custom_data)
-
         return await handler(event, data)

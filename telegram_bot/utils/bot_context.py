@@ -12,7 +12,8 @@ languages = {
             "product_text": "Mahsulotlar",
             "about_text": "Bot Xaqida",
             "admin_text": "Bot Admini",
-            "phone_number_text": "Telefon raqam"
+            "phone_number_text": "Telefon raqam",
+            "profile_text": "Profil"
         }
     },
     "ru": {
@@ -28,7 +29,8 @@ languages = {
             "product_text": "Продукты",
             "about_text": "О боте",
             "admin_text": "Администратор",
-            "phone_number_text": "Номер телефона"
+            "phone_number_text": "Номер телефона",
+            "profile_text": "Профиль"
         }
     },
     "en": {
@@ -44,7 +46,8 @@ languages = {
             "product_text": "Products",
             "about_text": "About",
             "admin_text": "Admin",
-            "phone_number_text": "Phone number"
+            "phone_number_text": "Phone number",
+            "profile_text": "Profile"
         }
     },
 }

@@ -13,9 +13,12 @@ from states.AllStates import UserStates
 from utils.api_connections import update_user_language
 from aiogram import Router
 
-from telegram_bot.keyboards.default.user_btns import send_phone_number_btn
-from telegram_bot.keyboards.inline.user_btns import Lang
-from telegram_bot.utils.api_connections import send_verify_code, get_regions
+from keyboards.default.user_btns import send_phone_number_btn, regions_btn
+from keyboards.inline.user_btns import Lang
+from utils.api_connections import send_verify_code, get_regions, verify_user
+from utils.usefull_functions import _short
+
+from utils.api_connections import get_user_info
 
 user_route = Router()
 
@@ -53,7 +56,7 @@ async def selected_language_callback(c: CallbackQuery, state: FSMContext):
         await state.set_state(UserStates.phone_number)
 
 
-@user_route.message(UserStates.phone_number, F.contact)
+@user_route.message(UserStates.phone_number, F.content_type.in_({'text', 'contact'}))
 async def user_phone_number_state(message: Message, state: FSMContext):
     lang = (await state.get_data())['lang']
     if message.contact:
@@ -65,7 +68,7 @@ async def user_phone_number_state(message: Message, state: FSMContext):
         user_id=message.from_user.id,
         phone_number=phone_number
     )
-    await state.update_data(code=code['code'])
+    await state.update_data(code=code['code'], phone_number=phone_number)
     await message.answer(languages[lang]['verify_code_text'])
     await state.set_state(UserStates.verify_code)
 
@@ -75,8 +78,34 @@ async def user_verify_code_state(message: Message, state: FSMContext):
     code = message.text
     data = await state.get_data()
     lang = data['lang']
-    regions = await get_regions()
     if int(code) == data['code']:
-        await message.answer(languages[lang]['choose_region_handler'])
+        regions = await get_regions()
+        btn = await regions_btn(regions)
+        await message.answer(languages[lang]['choose_region_handler'], reply_markup=btn)
+        await state.set_state(UserStates.region)
     else:
         await message.answer(languages[lang]['wrong_code_text'])
+
+
+@user_route.message(UserStates.region, F.text)
+async def user_region_state(message: Message, state: FSMContext):
+    user_region = message.text
+    data = await state.get_data()
+    await verify_user(
+        user_id=message.from_user.id,
+        phone_number=data['phone_number'],
+        region=user_region
+    )
+    await state.set_state(None)
+    await start_command(message)
+
+
+@user_route.message(F.text, F.in_(_short('profile_text')))
+async def user_profile_handler(message: Message, state: FSMContext):
+    user_id = message.from_user.id
+    info = await get_user_info(user_id)
+    print(info)
+
+
+
+

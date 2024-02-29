@@ -48,3 +48,23 @@ async def get_regions():
                 return await response.json()
             else:
                 return []
+
+
+async def verify_user(user_id: int, phone_number: str, region: str):
+    data = {"user_id": user_id, "phone_number": phone_number, "region": region}
+    async with ClientSession() as session:
+        async with session.patch(f"{API_URL}/verify_user/", data=data) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return False
+
+
+async def get_user_info(user_id: int):
+    async with ClientSession() as session:
+        async with session.get(f"{API_URL}/user_info/{user_id}/") as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return None
+

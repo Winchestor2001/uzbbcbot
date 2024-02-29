@@ -7,12 +7,20 @@ class TelegramUserSerializer(ModelSerializer):
         model = models.TgUser
         fields = '__all__'
 
+    def update(self, instance, validated_data):
+        print(instance)
+        print(validated_data)
+        return super().update(instance, validated_data)
+
 
 class PhoneVerifyCodeSerializer(ModelSerializer):
     class Meta:
         model = models.PhoneVerifyCode
         fields = '__all__'
 
-    def create(self, validated_data):
-        print(validated_data)
-        return models.PhoneVerifyCode.objects.create(**validated_data)
+
+class RegionsSerializer(ModelSerializer):
+    class Meta:
+        model = models.Region
+        fields = '__all__'
+
