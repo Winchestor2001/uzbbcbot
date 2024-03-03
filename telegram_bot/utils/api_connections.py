@@ -68,3 +68,12 @@ async def get_user_info(user_id: int):
             else:
                 return None
 
+
+async def search_service_by_location(user_id: int, latitude: float, longitude: float):
+    params = {'user_id': user_id, 'latitude': latitude, 'longitude': longitude}
+    async with ClientSession() as session:
+        async with session.get(f"{API_URL}/search_service/", params=params) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return []

@@ -1,19 +1,22 @@
 import random
 
+from django.http import HttpResponseRedirect
+from django.views.generic import TemplateView
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from bot_api.serializers import TelegramUserSerializer, PhoneVerifyCodeSerializer, RegionsSerializer
+from bot_api.serializers import TelegramUserSerializer, PhoneVerifyCodeSerializer, RegionsSerializer, ServiceSerializer
 from . import models
+from .utils import filter_profile_locations
 
 
 class TelegramUserCreateAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, *args, **kwargs):
-        user_id = request.GET.get('user_id')
-        tg_user = models.TgUser.objects.filter(user_id=user_id)
+        user_id = kwargs.get('user_id')
+        tg_user = models.TgUser.objects.get(user_id=user_id)
         serializer = TelegramUserSerializer(instance=tg_user)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
@@ -79,3 +82,26 @@ class UpdateUserInfoAPIView(APIView):
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
+class SearchServiceByLocationAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        lat = request.GET['latitude']
+        long = request.GET['longitude']
+        user_id = request.GET['user_id']
+        user = models.TgUser.objects.get(user_id=int(user_id))
+        services = models.Service.objects.filter(region=user.region)
+        services = filter_profile_locations(
+            obj=services, lat=lat, long=long
+        )
+        serializer = ServiceSerializer(instance=services, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class CallAPIView(TemplateView):
+    template_name = 'call.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['phone'] = self.request.GET.get('phone')
+        return context

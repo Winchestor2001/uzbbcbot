@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Call Page</title>
+</head>
+<body>
+
+<script>
+
+    window.onload = function() {
+        console.log(window.location.href)
+        window.open('tel:{{ phone }}', '_parent');
+    }
+</script>
+</body>
+</html>

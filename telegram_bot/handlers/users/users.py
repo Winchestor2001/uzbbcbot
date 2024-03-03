@@ -2,7 +2,7 @@ from aiogram import F
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
-from aiogram.enums.content_type import ContentType
+from aiogram.utils.formatting import PhoneNumber
 
 from keyboards.default.user_btns import start_command_btn
 from keyboards.inline.user_btns import choose_language_btn
@@ -16,24 +16,30 @@ from aiogram import Router
 from keyboards.default.user_btns import send_phone_number_btn, regions_btn
 from keyboards.inline.user_btns import Lang
 from utils.api_connections import send_verify_code, get_regions, verify_user
-from utils.usefull_functions import _short
 
 from utils.api_connections import get_user_info
+
+from filters.user_filters import BtnLangCheck
+from keyboards.default.user_btns import profile_btn
+
+from keyboards.default.user_btns import location_btn
+from keyboards.inline.user_btns import service_btn
+from utils.api_connections import search_service_by_location
+from utils.usefull_functions import location_info
 
 user_route = Router()
 
 
 @user_route.message(CommandStart())
-async def start_command(message: Message):
-    lang = message.from_user.language_code
+async def start_command(message: Message, state: FSMContext):
+    lang = (await state.get_data())['lang']
     context = languages[lang]['start_command']
     btn = await start_command_btn(lang)
     await message.answer(context, reply_markup=btn)
 
 
-async def choose_language_handler(message: Message, state: FSMContext, data: dict):
+async def choose_language_handler(message: Message, state: FSMContext):
     btn = await choose_language_btn()
-    await state.update_data(data=data)
     await message.answer("Tilni tanlang\n\nВыберите язык\n\nChoose language", reply_markup=btn)
 
 
@@ -100,12 +106,68 @@ async def user_region_state(message: Message, state: FSMContext):
     await start_command(message)
 
 
-@user_route.message(F.text, F.in_(_short('profile_text')))
+# @user_route.message(F.text.in_(_short('profile_text')))
+@user_route.message(BtnLangCheck('profile_text'))
 async def user_profile_handler(message: Message, state: FSMContext):
     user_id = message.from_user.id
+    data = await state.get_data()
+    lang = data['lang']
     info = await get_user_info(user_id)
-    print(info)
+
+    context = languages[lang]['profile_text'].format(
+        info['user_id'], info['username'], info['region']['name'], info['phone_number']
+    )
+    btn = await profile_btn(lang)
+    await message.answer(context, reply_markup=btn)
 
 
+@user_route.message(BtnLangCheck('back_text'))
+async def user_back_handler(message: Message, state: FSMContext):
+    await start_command(message, state)
 
 
+@user_route.message(BtnLangCheck('service_text'))
+async def service_handler(message: Message, state: FSMContext):
+    data = await state.get_data()
+    lang = data['lang']
+    context = languages[lang]['location_text']
+    btn = await location_btn(lang)
+    await message.answer(context, reply_markup=btn)
+    await state.set_state(UserStates.location)
+
+
+@user_route.message(BtnLangCheck('product_text'))
+async def product_handler(message: Message, state: FSMContext):
+    pass
+
+
+@user_route.message(BtnLangCheck('about_text'))
+async def about_handler(message: Message, state: FSMContext):
+    pass
+
+
+@user_route.message(BtnLangCheck('admin_text'))
+async def admin_handler(message: Message, state: FSMContext):
+    pass
+
+
+@user_route.message(UserStates.location)
+async def location_state(message: Message, state: FSMContext):
+    data = await state.get_data()
+    lang = data['lang']
+    lat = message.location.latitude
+    lon = message.location.longitude
+    services = await search_service_by_location(message.from_user.id, lat, lon)
+    print(services)
+    for item in services:
+        location = location_info(item['latitude'], item['longitude'])
+        context = languages[lang]['service_info_text'].format(
+            item['fullname'], item['professional'], item['price'], item['region'], location
+        )
+
+        # tel = PhoneNumber(item['phone_number'])
+        # context += f"\n\n{tel.as_html()}"
+        btn = await service_btn(lang, item['phone_number'])
+        await message.answer(context, reply_markup=btn)
+
+    await state.set_state(None)

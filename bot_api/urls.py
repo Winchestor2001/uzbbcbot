@@ -9,5 +9,8 @@ urlpatterns = [
     path('send_verify/', views.PhoneVerifyCodeAPIView.as_view()),
     path('regions/', views.RegionsAPIView.as_view()),
     path('verify_user/', views.UpdateUserInfoAPIView.as_view()),
+    path('search_service/', views.SearchServiceByLocationAPIView.as_view()),
+
+    path('call/', views.CallAPIView.as_view()),
 ]
 

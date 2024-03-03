@@ -1,11 +1,23 @@
-from aiogram import types
-from utils.api_connections import add_user
+from aiogram.types import Message
+from aiogram.filters import Filter
+from utils.bot_context import languages
 
 
-# class IsActiveFilter(BoundFilter):
-#     async def check(self, message: types.Message):
-#         user_data = await add_user(
-#             user_id=message.from_user.id,
-#             username=message.from_user.username
-#         )
-#         return user_data and user_data.get('is_active', False)
+class BtnLangCheck(Filter):
+
+    def __init__(self, text: str) -> None:
+        self.key = text
+
+    async def __call__(self, message: Message) -> bool:
+        text = message.text
+        result = []
+
+        for item in languages:
+            result.append(
+                languages[item]['reply_button'][self.key]
+            )
+        return text in result
+
+
+
+

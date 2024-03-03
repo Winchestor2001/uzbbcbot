@@ -5,4 +5,5 @@ class UserStates(StatesGroup):
     phone_number = State()
     verify_code = State()
     region = State()
+    location = State()
 

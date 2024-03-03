@@ -41,6 +41,9 @@ class Service(models.Model):
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, blank=True, null=True)
     professional = models.ForeignKey(Professional, on_delete=models.SET_NULL, blank=True, null=True)
     price = models.FloatField()
+    latitude = models.CharField(max_length=200, null=True, blank=True)
+    longitude = models.CharField(max_length=200, null=True, blank=True)
+    phone_number = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.fullname
@@ -66,6 +69,9 @@ class ServiceWorkTime(models.Model):
 class Market(models.Model):
     name = models.CharField(max_length=200)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
+    latitude = models.CharField(max_length=200, null=True, blank=True)
+    longitude = models.CharField(max_length=200, null=True, blank=True)
+    phone_number = models.CharField(max_length=50, null=True, blank=True)
 
     def __str__(self):
         return self.name
