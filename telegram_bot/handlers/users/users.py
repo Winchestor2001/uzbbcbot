@@ -27,6 +27,8 @@ from keyboards.inline.user_btns import service_btn
 from utils.api_connections import search_service_by_location
 from utils.usefull_functions import location_info
 
+from bot_api.utils import calc_distance
+
 user_route = Router()
 
 
@@ -103,10 +105,9 @@ async def user_region_state(message: Message, state: FSMContext):
         region=user_region
     )
     await state.set_state(None)
-    await start_command(message)
+    await start_command(message, state)
 
 
-# @user_route.message(F.text.in_(_short('profile_text')))
 @user_route.message(BtnLangCheck('profile_text'))
 async def user_profile_handler(message: Message, state: FSMContext):
     user_id = message.from_user.id
@@ -115,7 +116,7 @@ async def user_profile_handler(message: Message, state: FSMContext):
     info = await get_user_info(user_id)
 
     context = languages[lang]['profile_text'].format(
-        info['user_id'], info['username'], info['region']['name'], info['phone_number']
+        info['user_id'], info['username'], info['region'], info['phone_number']
     )
     btn = await profile_btn(lang)
     await message.answer(context, reply_markup=btn)
@@ -157,17 +158,33 @@ async def location_state(message: Message, state: FSMContext):
     lang = data['lang']
     lat = message.location.latitude
     lon = message.location.longitude
+    btn = await start_command_btn(lang)
     services = await search_service_by_location(message.from_user.id, lat, lon)
-    print(services)
+    loading = await message.answer("⏳", reply_markup=btn)
+    await loading.delete()
     for item in services:
-        location = location_info(item['latitude'], item['longitude'])
+        location = calc_distance(lat, lon, item['latitude'], item['longitude'])
         context = languages[lang]['service_info_text'].format(
             item['fullname'], item['professional'], item['price'], item['region'], location
         )
-
-        # tel = PhoneNumber(item['phone_number'])
-        # context += f"\n\n{tel.as_html()}"
         btn = await service_btn(lang, item['phone_number'])
         await message.answer(context, reply_markup=btn)
 
     await state.set_state(None)
+
+
+@user_route.message(BtnLangCheck('edit_user_info'))
+async def edit_user_info_handler(message: Message, state: FSMContext):
+    data = await state.get_data()
+    lang = data['lang']
+    btn = await send_phone_number_btn(lang)
+    await message.answer(languages[lang]['get_phone_number_handler'], reply_markup=btn)
+    await state.set_state(UserStates.phone_number)
+
+
+@user_route.message(BtnLangCheck('edit_language_text'))
+async def edit_language_handler(message: Message, state: FSMContext):
+    await choose_language_handler(message, state)
+
+
+

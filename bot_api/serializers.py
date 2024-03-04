@@ -9,11 +9,15 @@ class RegionsSerializer(ModelSerializer):
 
 
 class TelegramUserSerializer(ModelSerializer):
-    region = RegionsSerializer()
-
     class Meta:
         model = models.TgUser
         fields = '__all__'
+
+    def to_representation(self, instance):
+        data = super(TelegramUserSerializer, self).to_representation(instance)
+        if instance.region:
+            data['region'] = instance.region.name
+        return data
 
 
 class PhoneVerifyCodeSerializer(ModelSerializer):
@@ -30,5 +34,6 @@ class ServiceSerializer(ModelSerializer):
     def to_representation(self, instance):
         data = super(ServiceSerializer, self).to_representation(instance)
         data['professional'] = instance.professional.name
+        data['region'] = instance.region.name
         return data
 

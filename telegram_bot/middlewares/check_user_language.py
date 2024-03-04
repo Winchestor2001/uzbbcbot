@@ -22,6 +22,7 @@ class SetUserLanguageMiddleware(BaseMiddleware):
         user_id = event.from_user.id
         state: FSMContext = data.get('state')
         current_state = await state.get_state()
+        current_data = await state.get_data()
         await add_user(
             user_id=event.from_user.id,
             username=event.from_user.username
@@ -31,6 +32,7 @@ class SetUserLanguageMiddleware(BaseMiddleware):
             "lang": user['language'],
             "is_active": user['is_active'],
         }
+        custom_data.update(current_data)
         await state.set_data(custom_data)
         if not user['is_active'] and current_state is None:
             return await choose_language_handler(event, state)

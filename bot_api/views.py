@@ -78,6 +78,7 @@ class UpdateUserInfoAPIView(APIView):
         user.region = models.Region.objects.get(name=region)
         user.is_active = True
         user.save()
+        models.PhoneVerifyCode.objects.get(tg_user=user).delete()
         serializer = TelegramUserSerializer(instance=user)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 

@@ -1,6 +1,9 @@
-from aiogram.types import ReplyKeyboardMarkup, KeyboardButton
+from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, ReplyKeyboardRemove
 from aiogram.utils.keyboard import ReplyKeyboardBuilder
 from utils.bot_context import languages
+
+
+remove_btn = ReplyKeyboardRemove()
 
 
 async def start_command_btn(lang: str):
@@ -50,9 +53,7 @@ async def regions_btn(regions: list):
 
 async def profile_btn(lang: str):
     btn = ReplyKeyboardBuilder()
-    btn.button(text=languages[lang]['reply_button']['edit_phone_number_text'])
-    btn.button(text=languages[lang]['reply_button']['edit_region_text'])
-    btn.button(text=languages[lang]['reply_button']['edit_language_text'])
+    btn.button(text=languages[lang]['reply_button']['edit_user_info'])
     btn.button(text=languages[lang]['reply_button']['edit_language_text'])
     btn.add(
         KeyboardButton(text=languages[lang]['reply_button']['back_text'])
@@ -65,8 +66,10 @@ async def profile_btn(lang: str):
 async def location_btn(lang: str):
     btn = ReplyKeyboardBuilder()
     btn.add(
-        KeyboardButton(text=languages[lang]['reply_button']['location_text'], request_location=True)
+        KeyboardButton(text=languages[lang]['reply_button']['location_text'], request_location=True),
+        KeyboardButton(text=languages[lang]['reply_button']['back_text'])
     )
+    btn.adjust(1)
     return btn.as_markup(resize_keyboard=True)
 
 

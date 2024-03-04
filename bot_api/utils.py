@@ -16,7 +16,8 @@ def calc_distance(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
     meters = r * c  # output distance in meters
-    return meters / 1000.0  # output distance in kilometers
+    result = meters / 1000.0
+    return round(result, 1) if result > 1 else 1
 
 
 def filter_profile_locations(obj, lat, long):

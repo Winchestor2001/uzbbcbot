@@ -38,7 +38,7 @@ async def service_btn(lang: str, phone_number):
         inline_keyboard=[
             [
                 InlineKeyboardButton(
-                    text=languages[lang]['call_text'],
+                    text=languages[lang]['reply_button']['call_text'].format(phone_number),
                     url=f"{API_URL}/call/?phone={phone_number}"),
             ],
         ]
