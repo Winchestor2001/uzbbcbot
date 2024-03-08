@@ -38,17 +38,25 @@ async def send_phone_number_btn(lang: str):
     return btn
 
 
-async def regions_btn(regions: list):
-    btn = ReplyKeyboardMarkup(
-        resize_keyboard=True,
-        keyboard=[
-            [
-                KeyboardButton(text=item['name'])
-            ]
-            for item in regions
-        ]
+async def regions_btn(lang: str, regions: list):
+    btn = ReplyKeyboardBuilder()
+    btn.row(
+        KeyboardButton(text=languages[lang]["reply_button"]["only_uzbekistan"])
     )
-    return btn
+    btn.add(
+        *[KeyboardButton(text=item['name']) for item in regions]
+    )
+    btn.adjust(2)
+    return btn.as_markup(resize_keyboard=True)
+
+
+async def cities_btn(cities: list):
+    btn = ReplyKeyboardBuilder()
+    btn.add(
+        *[KeyboardButton(text=item) for item in cities]
+    )
+    btn.adjust(2)
+    return btn.as_markup(resize_keyboard=True)
 
 
 async def profile_btn(lang: str):

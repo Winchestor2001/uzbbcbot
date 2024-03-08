@@ -11,6 +11,14 @@ class Region(models.Model):
         return self.name
 
 
+class City(models.Model):
+    name = models.CharField(max_length=100)
+    region = models.ForeignKey(Region, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+
 class TgUser(models.Model):
     LANGUAGES = (
         ('uz', 'uz'),
@@ -23,7 +31,7 @@ class TgUser(models.Model):
     phone_number = models.CharField(max_length=50, blank=True, null=True)
     is_active = models.BooleanField(default=False)
     language = models.CharField(max_length=10, choices=LANGUAGES, default='uz')
-    region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"{self.user_id} - {self.username}"
@@ -86,8 +94,9 @@ class MarketWorkTime(models.Model):
         return self.service
 
 
-class Rating(models.Model):
+class ServiceRating(models.Model):
     tg_user = models.ForeignKey(TgUser, on_delete=models.CASCADE)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE)
     rating = models.FloatField()
     comment = models.CharField(max_length=250)
 
@@ -95,10 +104,9 @@ class Rating(models.Model):
         return f"{self.tg_user} - {self.rating}"
 
 
-class PhoneVerifyCode(models.Model):
+class MarketRating(models.Model):
     tg_user = models.ForeignKey(TgUser, on_delete=models.CASCADE)
-    code = models.IntegerField()
-
-    def __str__(self):
-        return f"{self.tg_user} - {self.code}"
+    market = models.ForeignKey(Market, on_delete=models.CASCADE)
+    rating = models.FloatField()
+    comment = models.CharField(max_length=250)
 

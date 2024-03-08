@@ -12,6 +12,11 @@ class MarketWorkTimeInline(admin.TabularInline):
     extra = 1
 
 
+class CityInline(admin.TabularInline):
+    model = models.City
+    extra = 1
+
+
 @admin.register(models.TgUser)
 class TgUserAdmin(admin.ModelAdmin):
     list_display = ['user_id', 'username', 'is_active', 'language']
@@ -22,6 +27,7 @@ class TgUserAdmin(admin.ModelAdmin):
 class RegionAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
     list_display_links = ['name']
+    inlines = [CityInline]
 
 
 @admin.register(models.Professional)
@@ -50,13 +56,15 @@ class MarketAdmin(admin.ModelAdmin):
     inlines = [MarketWorkTimeInline]
 
 
-@admin.register(models.Rating)
-class RatingAdmin(admin.ModelAdmin):
-    list_display = ['id', 'tg_user', 'rating', 'comment']
+@admin.register(models.ServiceRating)
+class ServiceRatingAdmin(admin.ModelAdmin):
+    list_display = ['id', 'tg_user', 'service', 'rating', 'comment']
     list_display_links = ['tg_user']
 
 
-@admin.register(models.PhoneVerifyCode)
-class PhoneVerifyCodeAdmin(admin.ModelAdmin):
-    list_display = ['id', 'tg_user', 'code']
+@admin.register(models.MarketRating)
+class MarketRatingAdmin(admin.ModelAdmin):
+    list_display = ['id', 'tg_user', 'market', 'rating', 'comment']
     list_display_links = ['tg_user']
+
+

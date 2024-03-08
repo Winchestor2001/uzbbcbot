@@ -3,7 +3,7 @@ from typing import Union, Callable, Dict, Any, Awaitable
 from aiogram import BaseMiddleware
 from aiogram.dispatcher.event.bases import CancelHandler
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, TelegramObject
 
 from telegram_bot.handlers.users.users import choose_language_handler
 from telegram_bot.states.AllStates import UserStates
@@ -33,8 +33,9 @@ class SetUserLanguageMiddleware(BaseMiddleware):
             "is_active": user['is_active'],
         }
         custom_data.update(current_data)
+        data['user_data'] = custom_data
         await state.set_data(custom_data)
-        if not user['is_active'] and current_state is None:
-            return await choose_language_handler(event, state)
+        if not user['is_active'] and current_state is None and not getattr(event, 'data', False):
+            return await choose_language_handler(event)
 
         return await handler(event, data)

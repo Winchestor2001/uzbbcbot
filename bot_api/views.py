@@ -6,7 +6,7 @@ from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from bot_api.serializers import TelegramUserSerializer, PhoneVerifyCodeSerializer, RegionsSerializer, ServiceSerializer
+from bot_api.serializers import TelegramUserSerializer, RegionsSerializer, ServiceSerializer
 from . import models
 from .utils import filter_profile_locations
 
@@ -41,22 +41,6 @@ class TelegramUserAPIView(generics.RetrieveUpdateAPIView):
     lookup_field = 'user_id'
 
 
-class PhoneVerifyCodeAPIView(APIView):
-    permission_classes = [permissions.AllowAny]
-
-    def post(self, request, *args, **kwargs):
-        user_phone_number = request.data['phone_number']
-        data = {
-            "tg_user": request.data['user_id'],
-            "code": random.randint(1000, 99999)
-        }
-        print(data)
-        serializer = PhoneVerifyCodeSerializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
-
-
 class RegionsAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
@@ -72,10 +56,10 @@ class UpdateUserInfoAPIView(APIView):
     def patch(self, request):
         user_id = request.data['user_id']
         phone_number = request.data['phone_number']
-        region = request.data['region']
+        city = request.data['city']
         user = models.TgUser.objects.get(user_id=int(user_id))
         user.phone_number = phone_number
-        user.region = models.Region.objects.get(name=region)
+        user.city = models.City.objects.get(name=city)
         user.is_active = True
         user.save()
         models.PhoneVerifyCode.objects.get(tg_user=user).delete()

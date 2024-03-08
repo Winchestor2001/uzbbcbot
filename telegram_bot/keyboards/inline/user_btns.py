@@ -41,7 +41,25 @@ async def service_btn(lang: str, phone_number):
                     text=languages[lang]['reply_button']['call_text'].format(phone_number),
                     url=f"{API_URL}/call/?phone={phone_number}"),
             ],
+            [
+                InlineKeyboardButton(text="Comment", callback_data="comment")
+            ]
         ]
     )
     return btn
 
+
+async def test_comment_btn():
+    btn = InlineKeyboardMarkup(
+        inline_keyboard=[
+            [
+                InlineKeyboardButton(text="<--", callback_data="prev"),
+                InlineKeyboardButton(text="1/2", callback_data="0"),
+                InlineKeyboardButton(text="-->", callback_data="next"),
+            ],
+            [
+                InlineKeyboardButton(text="Back", callback_data="back")
+            ]
+        ]
+    )
+    return btn

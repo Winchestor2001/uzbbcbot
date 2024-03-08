@@ -31,16 +31,6 @@ async def update_user_language(user_id: int, language: str):
                 return None
 
 
-async def send_verify_code(user_id: int, phone_number: str):
-    data = {"user_id": user_id, "phone_number": phone_number}
-    async with ClientSession() as session:
-        async with session.post(f"{API_URL}/send_verify/", data=data) as response:
-            if response.status == 201:
-                return await response.json()
-            else:
-                return False
-
-
 async def get_regions():
     async with ClientSession() as session:
         async with session.get(f"{API_URL}/regions/") as response:
@@ -50,8 +40,8 @@ async def get_regions():
                 return []
 
 
-async def verify_user(user_id: int, phone_number: str, region: str):
-    data = {"user_id": user_id, "phone_number": phone_number, "region": region}
+async def verify_user(user_id: int, phone_number: str, city: str):
+    data = {"user_id": user_id, "phone_number": phone_number, "city": city}
     async with ClientSession() as session:
         async with session.patch(f"{API_URL}/verify_user/", data=data) as response:
             if response.status == 200:

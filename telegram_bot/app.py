@@ -4,7 +4,6 @@ import sys
 
 from loader import dp, bot
 import middlewares, filters, handlers
-# from handlers.users.users import register_users_py
 from utils.set_bot_commands import set_default_commands
 
 

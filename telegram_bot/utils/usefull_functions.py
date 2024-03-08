@@ -18,3 +18,8 @@ def location_info(lat, lon):
         return f"{country}, {city}, {suburb}"
 
 
+async def get_region_cities(obj: list, region: str):
+    for item in obj:
+        if item['name'] == region:
+            return item['cities']
+

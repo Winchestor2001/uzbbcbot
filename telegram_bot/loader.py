@@ -6,4 +6,4 @@ from data import config
 
 bot = Bot(token=config.BOT_TOKEN, parse_mode=ParseMode.HTML)
 storage = MemoryStorage()
-dp = Dispatcher(storage=storage)
+dp = Dispatcher(storage=storage, user_data={})
