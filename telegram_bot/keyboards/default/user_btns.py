@@ -41,7 +41,8 @@ async def send_phone_number_btn(lang: str):
 async def regions_btn(lang: str, regions: list):
     btn = ReplyKeyboardBuilder()
     btn.row(
-        KeyboardButton(text=languages[lang]["reply_button"]["only_uzbekistan"])
+        KeyboardButton(text=languages[lang]["reply_button"]["only_uzbekistan"]),
+        width=1
     )
     btn.add(
         *[KeyboardButton(text=item['name']) for item in regions]
@@ -50,11 +51,15 @@ async def regions_btn(lang: str, regions: list):
     return btn.as_markup(resize_keyboard=True)
 
 
-async def cities_btn(cities: list):
+async def subs_btn(cities: list, lang=False):
     btn = ReplyKeyboardBuilder()
     btn.add(
         *[KeyboardButton(text=item) for item in cities]
     )
+    if lang:
+        btn.add(
+            KeyboardButton(text=languages[lang]["reply_button"]["back_text"])
+        )
     btn.adjust(2)
     return btn.as_markup(resize_keyboard=True)
 
@@ -71,13 +76,14 @@ async def profile_btn(lang: str):
     return btn.as_markup(resize_keyboard=True)
 
 
-async def location_btn(lang: str):
+async def choose_service_category_btn(lang: str, categories: list):
     btn = ReplyKeyboardBuilder()
     btn.add(
-        KeyboardButton(text=languages[lang]['reply_button']['location_text'], request_location=True),
+        *[KeyboardButton(text=item['name']) for item in categories],
+
         KeyboardButton(text=languages[lang]['reply_button']['back_text'])
     )
-    btn.adjust(1)
+    btn.adjust(2)
     return btn.as_markup(resize_keyboard=True)
 
 

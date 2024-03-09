@@ -59,8 +59,17 @@ async def get_user_info(user_id: int):
                 return None
 
 
-async def search_service_by_location(user_id: int, latitude: float, longitude: float):
-    params = {'user_id': user_id, 'latitude': latitude, 'longitude': longitude}
+async def get_service_categories():
+    async with ClientSession() as session:
+        async with session.get(f"{API_URL}/get_services/") as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return []
+
+
+async def search_services(user_id: int, service: str, offset: int = 1):
+    params = {'user_id': user_id, 'offset': offset, 'service': service}
     async with ClientSession() as session:
         async with session.get(f"{API_URL}/search_service/", params=params) as response:
             if response.status == 200:

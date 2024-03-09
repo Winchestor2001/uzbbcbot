@@ -31,3 +31,15 @@ def filter_profile_locations(obj, lat, long):
 
     return result
 
+
+def count_ratings(ratings):
+    voted = len(ratings)
+
+    if voted:
+        voted_stars = 0
+        for rating in ratings:
+            voted_stars += rating.rating * 10
+
+        return round(voted_stars / 10 / voted, 1)
+    return 0.0
+

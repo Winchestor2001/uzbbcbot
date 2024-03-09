@@ -6,7 +6,8 @@ from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from bot_api.serializers import TelegramUserSerializer, RegionsSerializer, ServiceSerializer
+from bot_api.serializers import TelegramUserSerializer, RegionsSerializer, ServiceSerializer, ServiceCategorySerializer, \
+    ServiceStuffSerializer
 from . import models
 from .utils import filter_profile_locations
 
@@ -59,28 +60,35 @@ class UpdateUserInfoAPIView(APIView):
         city = request.data['city']
         user = models.TgUser.objects.get(user_id=int(user_id))
         user.phone_number = phone_number
-        user.city = models.City.objects.get(name=city)
+        if city != 'no':
+            user.city = models.City.objects.get(name=city)
+            user.all_regions = False
+        else:
+            user.all_regions = True
         user.is_active = True
         user.save()
-        models.PhoneVerifyCode.objects.get(tg_user=user).delete()
         serializer = TelegramUserSerializer(instance=user)
         return Response(serializer.data, status=status.HTTP_202_ACCEPTED)
 
 
-class SearchServiceByLocationAPIView(APIView):
+class SearchServiceAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, *args, **kwargs):
-        lat = request.GET['latitude']
-        long = request.GET['longitude']
+        limit = 3
         user_id = request.GET['user_id']
+        service = request.GET['service']
+        offset = int(request.GET['offset']) - 1
         user = models.TgUser.objects.get(user_id=int(user_id))
-        services = models.Service.objects.filter(region=user.region)
-        services = filter_profile_locations(
-            obj=services, lat=lat, long=long
-        )
-        serializer = ServiceSerializer(instance=services, many=True)
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        if user.all_regions:
+            services = models.Service.objects.all().order_by('-rating')
+        else:
+            services = models.ServiceStuff.objects.filter(city=user.city, service__name=service).order_by('-rating')
+        total_services = len(services)
+        serializer = ServiceStuffSerializer(instance=services[offset:offset + limit], many=True)
+        user_serizlier = TelegramUserSerializer(instance=user)
+        return Response({'services': serializer.data, 'user': user_serizlier.data, 'total_services': total_services},
+                        status=status.HTTP_200_OK)
 
 
 class CallAPIView(TemplateView):
@@ -90,3 +98,10 @@ class CallAPIView(TemplateView):
         context = super().get_context_data(**kwargs)
         context['phone'] = self.request.GET.get('phone')
         return context
+
+
+class GetAllServiceAPIView(APIView):
+    def get(self, request, *args, **kwargs):
+        services = models.ServiceCategory.objects.all()
+        serializer = ServiceCategorySerializer(instance=services, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)

@@ -1,5 +1,6 @@
 from rest_framework.serializers import ModelSerializer
 from . import models
+from .utils import count_ratings
 
 
 class CitySerializer(ModelSerializer):
@@ -41,9 +42,38 @@ class ServiceSerializer(ModelSerializer):
         model = models.Service
         fields = '__all__'
 
+
+class ServiceCategorySerializer(ModelSerializer):
+    class Meta:
+        model = models.ServiceCategory
+        fields = '__all__'
+
+    @staticmethod
+    def get_services(obj):
+        services = ServiceSerializer(instance=models.Service.objects.filter(category=obj), many=True)
+        return [item['name'] for item in services.data]
+
     def to_representation(self, instance):
-        data = super(ServiceSerializer, self).to_representation(instance)
-        data['professional'] = instance.professional.name
-        data['region'] = instance.region.name
+        redata = super(ServiceCategorySerializer, self).to_representation(instance)
+        redata['services'] = self.get_services(instance)
+        return redata
+
+
+class ServiceStuffSerializer(ModelSerializer):
+    class Meta:
+        model = models.ServiceStuff
+        fields = '__all__'
+
+    @staticmethod
+    def get_rating(obj):
+        ratings = models.ServiceRating.objects.filter(stuff=obj)
+        result = count_ratings(ratings)
+        return result
+
+    def to_representation(self, instance):
+        data = super(ServiceStuffSerializer, self).to_representation(instance)
+        data['service'] = instance.service.name
+        data['city'] = instance.city.name
+        # data['rating'] = self.get_rating(instance)
         return data
 

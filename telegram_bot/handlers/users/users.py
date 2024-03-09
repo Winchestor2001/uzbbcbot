@@ -20,13 +20,11 @@ from utils.api_connections import get_user_info
 from filters.user_filters import BtnLangCheck
 from keyboards.default.user_btns import profile_btn
 
-from keyboards.default.user_btns import location_btn
 from keyboards.inline.user_btns import service_btn
-from utils.api_connections import search_service_by_location
 from utils.usefull_functions import location_info
 
 from bot_api.utils import calc_distance
-from telegram_bot.keyboards.default.user_btns import cities_btn
+from telegram_bot.keyboards.default.user_btns import subs_btn
 from telegram_bot.keyboards.inline.user_btns import test_comment_btn
 from telegram_bot.utils.usefull_functions import get_region_cities
 
@@ -87,11 +85,20 @@ async def user_phone_number_state(message: Message, state: FSMContext):
 async def user_region_state(message: Message, state: FSMContext):
     user_region = message.text
     data = await state.get_data()
-    await state.update_data(region=user_region)
-    cities = await get_region_cities((await get_regions()), user_region)
-    btn = await cities_btn(cities)
-    await message.answer(languages[data['lang']]['choose_city_handler'], reply_markup=btn)
-    await state.set_state(UserStates.city)
+    if languages[data['lang']]['reply_button']['only_uzbekistan'] == user_region:
+        await verify_user(
+            user_id=message.from_user.id,
+            phone_number=data['phone_number'],
+            city='no',
+        )
+        await state.set_state(None)
+        await start_command(message, state)
+    else:
+        await state.update_data(region=user_region)
+        cities = await get_region_cities((await get_regions()), user_region)
+        btn = await subs_btn(cities)
+        await message.answer(languages[data['lang']]['choose_city_handler'], reply_markup=btn)
+        await state.set_state(UserStates.city)
 
 
 @router.message(UserStates.city, F.text)
@@ -113,8 +120,9 @@ async def user_profile_handler(message: Message, state: FSMContext):
     data = await state.get_data()
     lang = data['lang']
     info = await get_user_info(user_id)
+    city = languages[lang]['reply_button']['only_uzbekistan'] if info['all_regions'] else info['city']
     context = languages[lang]['profile_text'].format(
-        info['user_id'], info['username'], info['city'], info['phone_number']
+        info['user_id'], info['username'], city, info['phone_number']
     )
     btn = await profile_btn(lang)
     await message.answer(context, reply_markup=btn)

@@ -2,18 +2,18 @@ from django.contrib import admin
 from . import models
 
 
-class ServiceWorkTimeInline(admin.TabularInline):
-    model = models.ServiceWorkTime
-    extra = 1
-
-
-class MarketWorkTimeInline(admin.TabularInline):
-    model = models.MarketWorkTime
-    extra = 1
-
-
 class CityInline(admin.TabularInline):
     model = models.City
+    extra = 1
+
+
+class ServiceInline(admin.TabularInline):
+    model = models.Service
+    extra = 1
+
+
+class ProductInline(admin.TabularInline):
+    model = models.Product
     extra = 1
 
 
@@ -30,41 +30,41 @@ class RegionAdmin(admin.ModelAdmin):
     inlines = [CityInline]
 
 
-@admin.register(models.Professional)
-class ProfessionalAdmin(admin.ModelAdmin):
+@admin.register(models.ServiceCategory)
+class ServiceCategoryAdmin(admin.ModelAdmin):
     list_display = ['id', 'name']
     list_display_links = ['name']
+    inlines = [ServiceInline]
 
 
-@admin.register(models.Service)
-class ServiceAdmin(admin.ModelAdmin):
-    list_display = ['id', 'fullname', 'region', 'professional', 'price']
-    list_display_links = ['fullname', 'region']
-    inlines = [ServiceWorkTimeInline]
+@admin.register(models.ServiceStuff)
+class ServiceStuffAdmin(admin.ModelAdmin):
+    list_display = ['id', 'fullname', 'city', 'service', 'price', 'rating']
+    list_display_links = ['fullname', 'city']
 
 
-@admin.register(models.Product)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'price']
+@admin.register(models.ProductCategory)
+class ProductCategoryAdmin(admin.ModelAdmin):
+    list_display = ['id', 'name']
     list_display_links = ['name']
+    inlines = [ProductInline]
 
 
-@admin.register(models.Market)
-class MarketAdmin(admin.ModelAdmin):
+@admin.register(models.ProductDetail)
+class ProductDetailAdmin(admin.ModelAdmin):
     list_display = ['id', 'name', 'product']
     list_display_links = ['name', 'product']
-    inlines = [MarketWorkTimeInline]
 
 
 @admin.register(models.ServiceRating)
 class ServiceRatingAdmin(admin.ModelAdmin):
-    list_display = ['id', 'tg_user', 'service', 'rating', 'comment']
+    list_display = ['id', 'tg_user', 'stuff', 'rating', 'comment']
     list_display_links = ['tg_user']
 
 
-@admin.register(models.MarketRating)
-class MarketRatingAdmin(admin.ModelAdmin):
-    list_display = ['id', 'tg_user', 'market', 'rating', 'comment']
+@admin.register(models.ProductRating)
+class ProductRatingAdmin(admin.ModelAdmin):
+    list_display = ['id', 'tg_user', 'product_detail', 'rating', 'comment']
     list_display_links = ['tg_user']
 
 

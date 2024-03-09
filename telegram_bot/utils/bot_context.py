@@ -8,8 +8,10 @@ languages = {
         "verify_code_text": "🔢 Sms dagi kodni kiriting:",
         "wrong_code_text": "⚠️ Noto`g`ri kod",
         "profile_text": "🆔 <code>{}</code>\n👤 <b>{}</b>\n🌇 <b>{}</b>\n☎️ <code>{}</code>",
-        "location_text": "Lokatsiyani yuboring",
+        "services_text": "<b>{}</b> bo`yicha <b>{}</b> ta topildi.\n\n",
         "service_info_text": "<b>Ism:</b> {}\n<b>Soxasi:</b> {}\n<b>Narxi:</b> {} UZS\n<b>Viloyati:</b> {}\n\n{} km",
+        "choose_service_category": "Xizmat turini tanlang:",
+        "no_services_text": "Xizmat turi topilmadi",
 
         "reply_button": {
             "service_text": "Xizmatlar",
@@ -35,8 +37,10 @@ languages = {
         "verify_code_text": "🔢 Введите смс код:",
         "wrong_code_text": "⚠️ Неверный смс код",
         "profile_text": "🆔 <code>{}</code>\n👤 <b>{}</b>\n🌇 <b>{}</b>\n☎️ <code>{}</code>",
-        "location_text": "Отправьте локацию",
+        "services_text": "В <b>{}</b> найдено <b>{}</b>\n\n",
         "service_info_text": "<b>Имя:</b> {}\n<b>Профессия:</b> {}\n<b>Цена:</b> {} UZS\n<b>Область:</b> {}\n\n{} km",
+        "choose_service_category": "Выберите вид сервиса:",
+        "no_services_text": "Не найдено сервисов",
 
         "reply_button": {
             "service_text": "Сервисы",
@@ -62,8 +66,10 @@ languages = {
         "verify_code_text": "🔢 Enter sms code:",
         "wrong_code_text": "⚠️ Sms code is incorrect",
         "profile_text": "🆔 <code>{}</code>\n👤 <b>{}</b>\n🌇 <b>{}</b>\n☎️ <code>{}</code>",
-        "location_text": "Send your location",
+        "services_text": "In <b>{}</b> find <b>{}</b>\n\n",
         "service_info_text": "<b>Name:</b> {}\n<b>Professional:</b> {}\n<b>Price:</b> {} UZS\n<b>Region:</b> {}\n\n{} km",
+        "choose_service_category": "Choose service category:",
+        "no_services_text": "No services",
 
         "reply_button": {
             "service_text": "Services",
