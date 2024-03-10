@@ -1,4 +1,4 @@
-from aiogram.types import Message
+from aiogram.types import Message, CallbackQuery
 from aiogram.filters import Filter
 from utils.bot_context import languages
 
@@ -17,7 +17,5 @@ class BtnLangCheck(Filter):
                 languages[item]['reply_button'][self.key]
             )
         return text in result
-
-
 
 

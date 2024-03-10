@@ -8,4 +8,6 @@ class UserStates(StatesGroup):
     city = State()
     service_category = State()
     service = State()
+    product_category = State()
+    product = State()
 

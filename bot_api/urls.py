@@ -8,8 +8,14 @@ urlpatterns = [
     path('user_lang/<int:user_id>/', views.TelegramUserAPIView.as_view()),
     path('regions/', views.RegionsAPIView.as_view()),
     path('verify_user/', views.UpdateUserInfoAPIView.as_view()),
-    path('search_service/', views.SearchServiceAPIView.as_view()),
+    path('search_services/', views.SearchServiceAPIView.as_view()),
     path('get_services/', views.GetAllServiceAPIView.as_view()),
+    path('stuff_service/', views.StuffServiceAPIView.as_view()),
+    path('stuff_comments/', views.StuffCommentsAPIView.as_view()),
+    path('get_products/', views.GetAllProductAPIView.as_view()),
+    path('search_products/', views.SearchProductAPIView.as_view()),
+    path('product_info/', views.ProductInfoAPIView.as_view()),
+    path('product_comments/', views.ProductCommentsAPIView.as_view()),
 
     path('call/', views.CallAPIView.as_view()),
 ]

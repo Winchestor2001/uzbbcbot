@@ -84,7 +84,7 @@ class ServiceStuff(models.Model):
 
 
 class ProductDetail(models.Model):
-    name = models.CharField(max_length=200)
+    fullname = models.CharField(max_length=200)
     from_price = models.FloatField()
     to_price = models.FloatField()
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, blank=True, null=True)
@@ -93,7 +93,7 @@ class ProductDetail(models.Model):
     rating = models.FloatField(default=0.0)
 
     def __str__(self):
-        return self.name
+        return self.fullname
 
 
 class ServiceRating(models.Model):
@@ -101,6 +101,7 @@ class ServiceRating(models.Model):
     stuff = models.ForeignKey(ServiceStuff, on_delete=models.CASCADE)
     rating = models.FloatField()
     comment = models.CharField(max_length=250)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.tg_user} - {self.rating}"
@@ -111,4 +112,7 @@ class ProductRating(models.Model):
     product_detail = models.ForeignKey(ProductDetail, on_delete=models.CASCADE)
     rating = models.FloatField()
     comment = models.CharField(max_length=250)
+    created_at = models.DateTimeField(auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.tg_user} - {self.rating}"

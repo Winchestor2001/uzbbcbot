@@ -24,13 +24,13 @@ async def get_region_cities(obj: list, region: str):
             return item['cities']
 
 
-async def get_services(obj: list, category: str):
+async def get_sub_categories(obj: list, category: str, key: str):
     for item in obj:
         if item['name'] == category:
-            return item['services']
+            return item[key]
 
 
-async def services_context_maker(context: str, data: list):
+async def pagination_context_maker(context: str, data: list):
     for n, item in enumerate(data, 1):
         context += f"{n}) {item['fullname']} ⭐️<i>{item['rating']}/10</i>\n"
     return context

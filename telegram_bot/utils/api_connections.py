@@ -71,7 +71,66 @@ async def get_service_categories():
 async def search_services(user_id: int, service: str, offset: int = 1):
     params = {'user_id': user_id, 'offset': offset, 'service': service}
     async with ClientSession() as session:
-        async with session.get(f"{API_URL}/search_service/", params=params) as response:
+        async with session.get(f"{API_URL}/search_services/", params=params) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return []
+
+
+async def stuff_service(stuff_id: int):
+    params = {'stuff_id': stuff_id}
+    async with ClientSession() as session:
+        async with session.get(f"{API_URL}/stuff_service/", params=params) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return []
+
+
+async def stuff_comments(stuff_id: int):
+    params = {'stuff_id': stuff_id}
+    async with ClientSession() as session:
+        async with session.get(f"{API_URL}/stuff_comments/", params=params) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return []
+
+
+async def get_product_categories():
+    async with ClientSession() as session:
+        async with session.get(f"{API_URL}/get_products/") as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return []
+
+
+async def search_products(user_id: int, product: str, offset: int = 1):
+    params = {'user_id': user_id, 'offset': offset, 'product': product}
+    async with ClientSession() as session:
+        async with session.get(f"{API_URL}/search_products/", params=params) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return []
+
+
+async def get_product_info(product_id: int):
+    params = {'product_id': product_id}
+    async with ClientSession() as session:
+        async with session.get(f"{API_URL}/product_info/", params=params) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return []
+
+
+async def product_comments(product_id: int):
+    params = {'product_id': product_id}
+    async with ClientSession() as session:
+        async with session.get(f"{API_URL}/product_comments/", params=params) as response:
             if response.status == 200:
                 return await response.json()
             else:

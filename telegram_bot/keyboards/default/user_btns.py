@@ -76,7 +76,7 @@ async def profile_btn(lang: str):
     return btn.as_markup(resize_keyboard=True)
 
 
-async def choose_service_category_btn(lang: str, categories: list):
+async def choose_category_btn(lang: str, categories: list):
     btn = ReplyKeyboardBuilder()
     btn.add(
         *[KeyboardButton(text=item['name']) for item in categories],

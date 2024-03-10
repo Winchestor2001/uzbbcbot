@@ -4,12 +4,13 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
 from telegram_bot.filters.user_filters import BtnLangCheck
-from telegram_bot.keyboards.default.user_btns import choose_service_category_btn, subs_btn, start_command_btn
-from telegram_bot.keyboards.inline.user_btns import service_pagination_btn, Pagination
+from telegram_bot.keyboards.default.user_btns import choose_category_btn, subs_btn, start_command_btn
+from telegram_bot.keyboards.inline.user_btns import service_pagination_btn, Pagination, Staff, service_btn, \
+    StaffComment, stuff_comment_btn
 from telegram_bot.states.AllStates import UserStates
-from telegram_bot.utils.api_connections import search_services, get_service_categories
+from telegram_bot.utils.api_connections import search_services, get_service_categories, stuff_service, stuff_comments
 from telegram_bot.utils.bot_context import languages
-from telegram_bot.utils.usefull_functions import services_context_maker, get_services
+from telegram_bot.utils.usefull_functions import pagination_context_maker, get_sub_categories
 
 router = Router()
 
@@ -22,7 +23,7 @@ async def service_handler(message: Message, state: FSMContext):
     service_categories = await get_service_categories()
     await state.update_data(service_categories=service_categories)
     context = languages[lang]['choose_service_category']
-    btn = await choose_service_category_btn(lang, service_categories)
+    btn = await choose_category_btn(lang, service_categories)
     await message.answer(context, reply_markup=btn)
     await state.set_state(UserStates.service_category)
 
@@ -31,9 +32,10 @@ async def service_handler(message: Message, state: FSMContext):
 async def service_category_state(message: Message, state: FSMContext):
     data = await state.get_data()
     lang = data['lang']
-    services = await get_services(
+    services = await get_sub_categories(
         obj=data['service_categories'],
-        category=message.text
+        category=message.text,
+        key='services'
     )
     context = languages[lang]['choose_service_category']
     btn = await subs_btn(services, lang=lang)
@@ -51,12 +53,11 @@ async def service_state(message: Message, state: FSMContext):
 
     await state.update_data(service=message.text)
     services = await search_services(user_id=user_id, service=message.text)
-    print(services)
     if services['total_services']:
         city = languages[lang]['reply_button']['only_uzbekistan'] if services['user']['all_regions'] else services['user'][
             'city']
-        context = await services_context_maker(
-            context=languages[lang]['services_text'].format(city, services['total_services']),
+        context = await pagination_context_maker(
+            context=languages[lang]['find_text'].format(city, services['total_services']),
             data=services['services']
         )
         await message.answer("⏳", reply_markup=await start_command_btn(lang))
@@ -64,7 +65,7 @@ async def service_state(message: Message, state: FSMContext):
         await message.answer(context, reply_markup=btn)
         await state.set_state(None)
     else:
-        context = languages[lang]['no_services_text']
+        context = languages[lang]['no_find_text']
         await message.answer(context)
 
 
@@ -78,10 +79,46 @@ async def prev_page_callback(c: CallbackQuery, state: FSMContext):
     services = await search_services(user_id=user_id, service=data['service'], offset=page)
     city = languages[lang]['reply_button']['only_uzbekistan'] if services['user']['all_regions'] else services['user'][
         'city']
-    context = await services_context_maker(
-        context=languages[lang]['services_text'].format(city, services['total_services']),
+    context = await pagination_context_maker(
+        context=languages[lang]['find_text'].format(city, services['total_services']),
         data=services['services']
     )
     if c.message.html_text != context.strip():
         btn = await service_pagination_btn(services['services'], page, services['total_services'])
         await c.message.edit_text(context, reply_markup=btn)
+
+
+@router.callback_query(Staff.filter())
+async def staff_callback(c: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    lang = data['lang']
+    stuff_id = int(c.data.split(":")[-1])
+    staff_info = await stuff_service(stuff_id)
+    btn = await service_btn(lang, staff_info['phone_number'], stuff_id)
+    context = languages[lang]['service_info_text'].format(
+        staff_info['fullname'], staff_info['service'], staff_info['rating'], staff_info['price'], staff_info['city'], staff_info['experience'],
+        staff_info['from_date'][:-3], staff_info['to_date'][:-3]
+    )
+    await c.message.edit_text(context, reply_markup=btn)
+
+
+@router.callback_query(StaffComment.filter())
+async def staff_comment_callback(c: CallbackQuery, state: FSMContext):
+    await c.answer()
+    data = await state.get_data()
+    lang = data['lang']
+    stuff_id = int(c.data.split(":")[-1])
+    await state.update_data(
+        text=c.message.html_text,
+        btn=c.message.reply_markup
+    )
+    comments = await stuff_comments(stuff_id)
+    if comments:
+        await state.update_data(comments=comments, in_comment=0)
+        btn = await stuff_comment_btn(len(comments))
+        context = languages[lang]['comment_text'].format(comments[0]['tg_user'], comments[0]['comment'])
+        await c.message.edit_text(context, reply_markup=btn)
+    else:
+        context = languages[lang]['no_comments_text']
+        await c.answer(context, show_alert=True)
+

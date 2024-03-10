@@ -41,6 +41,7 @@ class ServiceCategoryAdmin(admin.ModelAdmin):
 class ServiceStuffAdmin(admin.ModelAdmin):
     list_display = ['id', 'fullname', 'city', 'service', 'price', 'rating']
     list_display_links = ['fullname', 'city']
+    readonly_fields = ['rating']
 
 
 @admin.register(models.ProductCategory)
@@ -52,8 +53,9 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(models.ProductDetail)
 class ProductDetailAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'product']
-    list_display_links = ['name', 'product']
+    list_display = ['id', 'fullname', 'product']
+    list_display_links = ['fullname', 'product']
+    readonly_fields = ['rating']
 
 
 @admin.register(models.ServiceRating)

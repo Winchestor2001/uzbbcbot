@@ -25,7 +25,6 @@ from utils.usefull_functions import location_info
 
 from bot_api.utils import calc_distance
 from telegram_bot.keyboards.default.user_btns import subs_btn
-from telegram_bot.keyboards.inline.user_btns import test_comment_btn
 from telegram_bot.utils.usefull_functions import get_region_cities
 
 router = Router()
@@ -133,11 +132,6 @@ async def user_back_handler(message: Message, state: FSMContext):
     await start_command(message, state)
 
 
-@router.message(BtnLangCheck('product_text'))
-async def product_handler(message: Message, state: FSMContext):
-    pass
-
-
 @router.message(BtnLangCheck('about_text'))
 async def about_handler(message: Message, state: FSMContext):
     pass
@@ -145,7 +139,10 @@ async def about_handler(message: Message, state: FSMContext):
 
 @router.message(BtnLangCheck('admin_text'))
 async def admin_handler(message: Message, state: FSMContext):
-    pass
+    data = await state.get_data()
+    lang = data['lang']
+    context = languages[lang]['admin_text']
+    await message.answer(context)
 
 
 @router.message(BtnLangCheck('edit_user_info'))
@@ -162,29 +159,34 @@ async def edit_language_handler(message: Message):
     await choose_language_handler(message)
 
 
-# TEST CODE
-@router.callback_query(F.data == 'comment')
-async def comment_callback(c: CallbackQuery, state: FSMContext):
-    await state.update_data(
-        text=c.message.html_text,
-        btn=c.message.reply_markup
-    )
-    btn = await test_comment_btn()
-    await c.message.edit_text("Comment - 1", reply_markup=btn)
+@router.callback_query(F.data == 'back')
+async def back_callback(c: CallbackQuery, state: FSMContext):
+    await c.answer()
+    data = await state.get_data()
+    await c.message.edit_text(data['text'], reply_markup=data['btn'])
 
 
 @router.callback_query(F.data == 'next')
 async def next_callback(c: CallbackQuery, state: FSMContext):
-    await c.message.edit_text("Comment - 2", reply_markup=c.message.reply_markup)
+    await c.answer()
+    data = await state.get_data()
+    lang = data['lang']
+    in_comment = data['in_comment']
+    in_comment += 1
+    if in_comment < len(data['comments']):
+        await state.update_data(in_comment=in_comment)
+        context = languages[lang]['comment_text'].format(data['comments'][in_comment]['tg_user'], data['comments'][in_comment]['comment'])
+        await c.message.edit_text(context, reply_markup=c.message.reply_markup)
 
 
 @router.callback_query(F.data == 'prev')
 async def prev_callback(c: CallbackQuery, state: FSMContext):
-    await c.message.edit_text("Comment - 1", reply_markup=c.message.reply_markup)
-
-
-@router.callback_query(F.data == 'back')
-async def back_callback(c: CallbackQuery, state: FSMContext):
+    await c.answer()
     data = await state.get_data()
-    await c.message.edit_text(data['text'], reply_markup=data['btn'])
-
+    lang = data['lang']
+    in_comment = data['in_comment']
+    if in_comment >= 0:
+        in_comment -= 1
+        await state.update_data(in_comment=in_comment)
+        context = languages[lang]['comment_text'].format(data['comments'][in_comment]['tg_user'], data['comments'][in_comment]['comment'])
+        await c.message.edit_text(context, reply_markup=c.message.reply_markup)

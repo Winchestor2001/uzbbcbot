@@ -43,6 +43,12 @@ class ServiceSerializer(ModelSerializer):
         fields = '__all__'
 
 
+class ProductSerializer(ModelSerializer):
+    class Meta:
+        model = models.Product
+        fields = '__all__'
+
+
 class ServiceCategorySerializer(ModelSerializer):
     class Meta:
         model = models.ServiceCategory
@@ -64,16 +70,59 @@ class ServiceStuffSerializer(ModelSerializer):
         model = models.ServiceStuff
         fields = '__all__'
 
-    @staticmethod
-    def get_rating(obj):
-        ratings = models.ServiceRating.objects.filter(stuff=obj)
-        result = count_ratings(ratings)
-        return result
-
     def to_representation(self, instance):
         data = super(ServiceStuffSerializer, self).to_representation(instance)
         data['service'] = instance.service.name
         data['city'] = instance.city.name
-        # data['rating'] = self.get_rating(instance)
+        return data
+
+
+class StuffCommentsSerializer(ModelSerializer):
+    class Meta:
+        model = models.ServiceRating
+        fields = ['tg_user', 'comment']
+
+    def to_representation(self, instance):
+        data = super(StuffCommentsSerializer, self).to_representation(instance)
+        data['tg_user'] = "**" + instance.tg_user.username[2:]
+        return data
+
+
+class ProductCategorySerializer(ModelSerializer):
+    class Meta:
+        model = models.ServiceCategory
+        fields = '__all__'
+
+    @staticmethod
+    def get_products(obj):
+        services = ProductSerializer(instance=models.Product.objects.filter(category=obj), many=True)
+        return [item['name'] for item in services.data]
+
+    def to_representation(self, instance):
+        redata = super(ProductCategorySerializer, self).to_representation(instance)
+        redata['products'] = self.get_products(instance)
+        return redata
+
+
+class ProductDetailSerializer(ModelSerializer):
+    class Meta:
+        model = models.ProductDetail
+        fields = '__all__'
+
+    def to_representation(self, instance):
+        data = super(ProductDetailSerializer, self).to_representation(instance)
+        data['product'] = instance.product.name
+        data['city'] = instance.city.name
+        return data
+
+
+class ProductCommentsSerializer(ModelSerializer):
+    class Meta:
+        model = models.ProductRating
+        fields = ['tg_user', 'comment']
+
+    def to_representation(self, instance):
+        data = super(ProductCommentsSerializer, self).to_representation(instance)
+        data['tg_user'] = "**" + instance.tg_user.username[2:]
         return data
 
