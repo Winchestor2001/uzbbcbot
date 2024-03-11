@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'bot_api',
+    'celery_tasks',
     'rest_framework',
 ]
 
@@ -293,3 +294,14 @@ JAZZMIN_SETTINGS = {
     # # Add a language dropdown into the admin
     # "language_chooser": False,
 }
+
+
+# Celery
+REDIS_HOST = env.str("REDIS_HOST")
+REDIS_PORT = env.str("REDIS_PORT")
+CELERY_BROKER_URL = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_BROKER_TRANSPORT_OPTIONS = {'visibility_timeout': 3600}
+CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
+CELERY_ACCEPT_CONTENT = env.list("CELERY_ACCEPT_CONTENT")
+CELERY_TASK_SERIALIZER = env.str("CELERY_TASK_SERIALIZER")
+CELERY_RESULT_SERIALIZER = env.str("CELERY_RESULT_SERIALIZER")
