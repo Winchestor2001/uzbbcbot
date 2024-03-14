@@ -18,6 +18,7 @@ languages = {
         "comment_text": "👤 <b>{}</b>:\n<i>{}</i>",
         "no_comments_text": "Izohlar topilmadi",
         "admin_text": "Bot Administratori: @username",
+        "no_find_text": "Xech narsa topilmadi",
 
         "reply_button": {
             "service_text": "👷‍♂️ Xizmatlar",
@@ -54,6 +55,7 @@ languages = {
         "comment_text": "👤 <b>{}</b>:\n<i>{}</i>",
         "no_comments_text": "Комментари не найдено",
         "admin_text": "Администратор бота: @username",
+        "no_find_text": "Ничего не найдено",
 
         "reply_button": {
             "service_text": "👷‍♂️ Сервисы",
@@ -90,6 +92,7 @@ languages = {
         "comment_text": "👤 <b>{}</b>:\n<i>{}</i>",
         "no_comments_text": "No comments",
         "admin_text": "Administrator: @username",
+        "no_find_text": "No find",
 
         "reply_button": {
             "service_text": "👷‍♂️ Services",
