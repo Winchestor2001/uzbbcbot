@@ -23,9 +23,8 @@ from keyboards.default.user_btns import profile_btn
 from keyboards.inline.user_btns import service_btn
 from utils.usefull_functions import location_info
 
-from bot_api.utils import calc_distance
-from telegram_bot.keyboards.default.user_btns import subs_btn
-from telegram_bot.utils.usefull_functions import get_region_cities
+from keyboards.default.user_btns import subs_btn
+from utils.usefull_functions import get_region_cities
 
 router = Router()
 

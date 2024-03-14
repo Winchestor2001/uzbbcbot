@@ -5,10 +5,10 @@ from aiogram.dispatcher.event.bases import CancelHandler
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, TelegramObject
 
-from telegram_bot.handlers.users.users import choose_language_handler
-from telegram_bot.states.AllStates import UserStates
-from telegram_bot.utils.api_connections import get_user_language, add_user
-from telegram_bot.utils.bot_context import languages
+from handlers.users.users import choose_language_handler
+from states.AllStates import UserStates
+from utils.api_connections import get_user_language, add_user
+from utils.bot_context import languages
 
 
 class SetUserLanguageMiddleware(BaseMiddleware):
