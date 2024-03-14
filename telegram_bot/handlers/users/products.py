@@ -3,15 +3,15 @@ from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from telegram_bot.filters.user_filters import BtnLangCheck
-from telegram_bot.keyboards.default.user_btns import choose_category_btn, subs_btn, start_command_btn
-from telegram_bot.keyboards.inline.user_btns import product_pagination_btn, Product, product_btn, ProductComment, \
+from filters.user_filters import BtnLangCheck
+from keyboards.default.user_btns import choose_category_btn, subs_btn, start_command_btn
+from keyboards.inline.user_btns import product_pagination_btn, Product, product_btn, ProductComment, \
     product_comment_btn
-from telegram_bot.states.AllStates import UserStates
-from telegram_bot.utils.api_connections import get_product_categories, search_products, get_product_info, \
+from states.AllStates import UserStates
+from utils.api_connections import get_product_categories, search_products, get_product_info, \
     product_comments
-from telegram_bot.utils.bot_context import languages
-from telegram_bot.utils.usefull_functions import get_sub_categories, pagination_context_maker
+from utils.bot_context import languages
+from utils.usefull_functions import get_sub_categories, pagination_context_maker
 
 router = Router()
 
