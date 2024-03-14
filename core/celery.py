@@ -15,7 +15,7 @@ minute = 1
 
 app.conf.beat_schedule = {
     f'send_push-every-{minute}-minute': {
-        'task': 'celery_tasks.check_user_push.check_push',
+        'task': 'celery_tasks.tasks.check_push',
         'schedule': timedelta(minutes=minute),
     }
 }
