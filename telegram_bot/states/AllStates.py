@@ -10,4 +10,6 @@ class UserStates(StatesGroup):
     service = State()
     product_category = State()
     product = State()
+    add_comment = State()
+    add_rating = State()
 

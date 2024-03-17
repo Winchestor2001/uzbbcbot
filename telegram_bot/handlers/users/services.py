@@ -5,7 +5,7 @@ from aiogram.types import Message, CallbackQuery
 
 from filters.user_filters import BtnLangCheck
 from keyboards.default.user_btns import choose_category_btn, subs_btn, start_command_btn
-from keyboards.inline.user_btns import service_pagination_btn, Pagination, Staff, service_btn, \
+from keyboards.inline.user_btns import service_pagination_btn, Pagination, Staff, call_btn, \
     StaffComment, stuff_comment_btn
 from states.AllStates import UserStates
 from utils.api_connections import search_services, get_service_categories, stuff_service, stuff_comments
@@ -54,8 +54,9 @@ async def service_state(message: Message, state: FSMContext):
     await state.update_data(service=message.text)
     services = await search_services(user_id=user_id, service=message.text)
     if services['total_services']:
-        city = languages[lang]['reply_button']['only_uzbekistan'] if services['user']['all_regions'] else services['user'][
-            'city']
+        city = languages[lang]['reply_button']['only_uzbekistan'] if services['user']['all_regions'] else \
+            services['user'][
+                'city']
         context = await pagination_context_maker(
             context=languages[lang]['find_text'].format(city, services['total_services']),
             data=services['services']
@@ -94,12 +95,13 @@ async def staff_callback(c: CallbackQuery, state: FSMContext):
     lang = data['lang']
     stuff_id = int(c.data.split(":")[-1])
     staff_info = await stuff_service(stuff_id)
-    btn = await service_btn(lang, staff_info['phone_number'], stuff_id)
+    btn = await call_btn(lang, staff_info['phone_number'], stuff_id, 'service')
+    price = staff_info['price'] if staff_info['price'] > 0 else languages[lang]['no_price_text']
     context = languages[lang]['service_info_text'].format(
-        staff_info['fullname'], staff_info['service'], staff_info['rating'], staff_info['price'], staff_info['city'], staff_info['experience'],
-        staff_info['from_date'][:-3], staff_info['to_date'][:-3]
+        staff_info['fullname'], staff_info['service'], staff_info['rating'], price, staff_info['city'],
+        staff_info['experience'], staff_info['location_url'], staff_info['description']
     )
-    await c.message.edit_text(context, reply_markup=btn)
+    await c.message.answer(context, reply_markup=btn, disable_web_page_preview=True)
 
 
 @router.callback_query(StaffComment.filter())
@@ -121,4 +123,3 @@ async def staff_comment_callback(c: CallbackQuery, state: FSMContext):
     else:
         context = languages[lang]['no_comments_text']
         await c.answer(context, show_alert=True)
-

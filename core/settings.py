@@ -55,6 +55,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware'
 ]
 
 ROOT_URLCONF = 'core.urls'
@@ -162,6 +163,7 @@ JAZZMIN_SETTINGS = {
         "bot_api.productdetail": "fas fa-info",
         "bot_api.servicestuff": "fas fa-id-badge",
         "bot_api.market": "fas fa-store",
+        "bot_api.aboutbot": "fas fa-tools",
     },
     "hide_models": ['auth.Group'],
 
@@ -305,3 +307,6 @@ CELERY_RESULT_BACKEND = 'redis://' + REDIS_HOST + ':' + REDIS_PORT + '/0'
 CELERY_ACCEPT_CONTENT = env.list("CELERY_ACCEPT_CONTENT")
 CELERY_TASK_SERIALIZER = env.str("CELERY_TASK_SERIALIZER")
 CELERY_RESULT_SERIALIZER = env.str("CELERY_RESULT_SERIALIZER")
+
+
+CORS_ALLOW_ALL_ORIGINS = True

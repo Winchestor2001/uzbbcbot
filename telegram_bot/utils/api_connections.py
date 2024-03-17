@@ -1,5 +1,5 @@
 from aiohttp import ClientSession
-from data.config import API_URL
+from telegram_bot.data.config import API_URL
 
 
 async def add_user(user_id: int, username: str):

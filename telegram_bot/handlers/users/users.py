@@ -20,9 +20,6 @@ from utils.api_connections import get_user_info
 from filters.user_filters import BtnLangCheck
 from keyboards.default.user_btns import profile_btn
 
-from keyboards.inline.user_btns import service_btn
-from utils.usefull_functions import location_info
-
 from keyboards.default.user_btns import subs_btn
 from utils.usefull_functions import get_region_cities
 
@@ -189,3 +186,37 @@ async def prev_callback(c: CallbackQuery, state: FSMContext):
         await state.update_data(in_comment=in_comment)
         context = languages[lang]['comment_text'].format(data['comments'][in_comment]['tg_user'], data['comments'][in_comment]['comment'])
         await c.message.edit_text(context, reply_markup=c.message.reply_markup)
+
+
+@router.callback_query(F.data.startswith('called'))
+async def user_called_callback(c: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    lang = data['lang']
+    _, datatype, receiver = c.data.split(':')
+    await state.update_data(datatype=datatype, receiver=receiver)
+    await c.message.edit_text(languages[lang]['write_comment_text'])
+    await state.set_state(UserStates.add_comment)
+
+
+@router.message(UserStates.add_comment)
+async def user_add_comment_handler(message: Message, state: FSMContext):
+    data = await state.get_data()
+    lang = data['lang']
+    await state.update_data(comment=message.text)
+    await message.answer(languages[lang]['write_rating_text'])
+    await state.set_state(UserStates.add_rating)
+
+
+@router.message(UserStates.add_rating, F.text.isdigit())
+async def user_add_rating_handler(message: Message, state: FSMContext):
+    data = await state.get_data()
+    lang = data['lang']
+    rating = int(message.text)
+    if 0 < rating > 11:
+        await message.answer(languages[lang]['added_comment'])
+        await state.set_state(None)
+
+
+@router.callback_query(F.data == 'no_called')
+async def user_no_called_callback(c: CallbackQuery):
+    await c.message.delete()

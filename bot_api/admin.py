@@ -43,6 +43,11 @@ class ServiceStuffAdmin(admin.ModelAdmin):
     list_display_links = ['fullname', 'city']
     readonly_fields = ['rating']
 
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields['experience'].widget.attrs['placeholder'] = 'YYYY (2024)'
+        return form
+
 
 @admin.register(models.ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
@@ -70,3 +75,11 @@ class ProductRatingAdmin(admin.ModelAdmin):
     list_display_links = ['tg_user']
 
 
+@admin.register(models.AboutBot)
+class AboutBotAdmin(admin.ModelAdmin):
+    list_display = ['id']
+
+    def get_form(self, request, obj=None, **kwargs):
+        form = super().get_form(request, obj, **kwargs)
+        form.base_fields['comment_request_time'].widget.attrs['placeholder'] = 'Only in minute'
+        return form

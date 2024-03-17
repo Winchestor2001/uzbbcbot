@@ -32,5 +32,6 @@ async def get_sub_categories(obj: list, category: str, key: str):
 
 async def pagination_context_maker(context: str, data: list):
     for n, item in enumerate(data, 1):
-        context += f"{n}) {item['fullname']} ⭐️<i>{item['rating']}/10</i>\n"
+        experience = item.get('experience', '')
+        context += f"{n}) {item['fullname']} {experience} ⭐️<i>{item['rating']}/10</i>\n"
     return context

@@ -72,12 +72,12 @@ class ServiceStuff(models.Model):
     fullname = models.CharField(max_length=100)
     service = models.ForeignKey(Service, on_delete=models.SET_NULL, blank=True, null=True)
     city = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True)
-    experience = models.DateField(blank=True, null=True)
-    price = models.FloatField()
+    experience = models.PositiveIntegerField(blank=True, null=True)
+    price = models.FloatField(blank=True, null=True)
     phone_number = models.CharField(max_length=50, null=True, blank=True)
-    from_date = models.TimeField()
-    to_date = models.TimeField()
     rating = models.FloatField(default=0.0)
+    description = models.TextField(blank=True, null=True)
+    location_url = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.fullname
@@ -91,6 +91,8 @@ class ProductDetail(models.Model):
     city = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True)
     phone_number = models.CharField(max_length=50, null=True, blank=True)
     rating = models.FloatField(default=0.0)
+    description = models.TextField(blank=True, null=True)
+    location_url = models.URLField(blank=True, null=True)
 
     def __str__(self):
         return self.fullname
@@ -116,3 +118,12 @@ class ProductRating(models.Model):
 
     def __str__(self):
         return f"{self.tg_user} - {self.rating}"
+
+
+class AboutBot(models.Model):
+    video = models.FileField(upload_to='video/')
+    description = models.TextField()
+    comment_request_time = models.PositiveIntegerField(default=1)
+
+    def __str__(self):
+        return "About Bot"

@@ -80,7 +80,7 @@ class ServiceStuffSerializer(ModelSerializer):
 class StuffCommentsSerializer(ModelSerializer):
     class Meta:
         model = models.ServiceRating
-        fields = ['tg_user', 'comment']
+        fields = ['tg_user', 'comment', 'rating']
 
     def to_representation(self, instance):
         data = super(StuffCommentsSerializer, self).to_representation(instance)

@@ -5,7 +5,7 @@ from aiogram.types import Message, CallbackQuery
 
 from filters.user_filters import BtnLangCheck
 from keyboards.default.user_btns import choose_category_btn, subs_btn, start_command_btn
-from keyboards.inline.user_btns import product_pagination_btn, Product, product_btn, ProductComment, \
+from keyboards.inline.user_btns import product_pagination_btn, Product, call_btn, ProductComment, \
     product_comment_btn
 from states.AllStates import UserStates
 from utils.api_connections import get_product_categories, search_products, get_product_info, \
@@ -77,13 +77,12 @@ async def staff_callback(c: CallbackQuery, state: FSMContext):
     lang = data['lang']
     product_id = int(c.data.split(":")[-1])
     product_info = await get_product_info(product_id)
-    print(product_info)
-    btn = await product_btn(lang, product_info['phone_number'], product_id)
+    btn = await call_btn(lang, product_info['phone_number'], product_id, 'product')
     context = languages[lang]['product_info_text'].format(
         product_info['fullname'], product_info['product'], product_info['rating'], product_info['from_price'],
-        product_info['to_price'], product_info['city']
+        product_info['to_price'], product_info['city'], product_info['location_url'], product_info['description']
     )
-    await c.message.edit_text(context, reply_markup=btn)
+    await c.message.answer(context, reply_markup=btn, disable_web_page_preview=True)
 
 
 @router.callback_query(ProductComment.filter())
@@ -104,30 +103,5 @@ async def product_comment_callback(c: CallbackQuery, state: FSMContext):
     else:
         context = languages[lang]['no_comments_text']
         await c.answer(context, show_alert=True)
-
-# @router.callback_query(F.data == 'product_prev')
-# async def product_next_callback(c: CallbackQuery, state: FSMContext):
-#     await c.answer()
-#     data = await state.get_data()
-#     lang = data['lang']
-#     in_comment = data['in_comment']
-#     in_comment += 1
-#     if in_comment < len(data['comments']):
-#         await state.update_data(in_comment=in_comment)
-#         context = languages[lang]['comment_text'].format(data['comments'][in_comment]['tg_user'], data['comments'][in_comment]['comment'])
-#         await c.message.edit_text(context, reply_markup=c.message.reply_markup)
-#
-#
-# @router.callback_query(F.data == 'product_next')
-# async def product_prev_callback(c: CallbackQuery, state: FSMContext):
-#     await c.answer()
-#     data = await state.get_data()
-#     lang = data['lang']
-#     in_comment = data['in_comment']
-#     if in_comment >= 0:
-#         in_comment -= 1
-#         await state.update_data(in_comment=in_comment)
-#         context = languages[lang]['comment_text'].format(data['comments'][in_comment]['tg_user'], data['comments'][in_comment]['comment'])
-#         await c.message.edit_text(context, reply_markup=c.message.reply_markup)
 
 

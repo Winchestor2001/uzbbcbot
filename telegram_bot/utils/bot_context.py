@@ -9,16 +9,17 @@ languages = {
         "wrong_code_text": "⚠️ Noto`g`ri kod",
         "profile_text": "🆔 <code>{}</code>\n👤 <b>{}</b>\n🌇 <b>{}</b>\n☎️ <code>{}</code>",
         "find_text": "<b>{}</b> bo`yicha <b>{}</b> ta topildi.\n\n",
-        "service_info_text": "<b>Ism:</b> {}\n<b>Soxasi:</b> {}\n<b>Ball:</b> ⭐️{}\n<b>Narxi:</b> {} UZS\n<b>Viloyati:</b> {}\n<b>Ish boshlanag sana:</b> {}\n<b>Ish vaqti:</b> {} - {}",
-        "product_info_text": "<b>Nomi:</b> {}\n<b>Mahsulot turi:</b> {}\n<b>Ball:</b> ⭐️{}\n<b>Narxi:</b> {} - {} UZS\n<b>Viloyati:</b> {}",
+        "service_info_text": "<b>Ism:</b> {}\n<b>Soxasi:</b> {}\n<b>Ball:</b> ⭐️{}\n<b>Narxi:</b> {} UZS\n<b>Viloyati:</b> {}\n<b>Ish boshlanag sana:</b> {}\n📍 <a href='{}'>Manzil</a>\n\n{}",
+        "product_info_text": "<b>Nomi:</b> {}\n<b>Mahsulot turi:</b> {}\n<b>Ball:</b> ⭐️{}\n<b>Narxi:</b> {} - {} UZS\n<b>Viloyati:</b> {}\n📍 <a href='{}'>Manzil</a>\n\n{}",
         "choose_service_category": "Xizmat turini tanlang:",
         "choose_product_category": "Mahsulot tanlang:",
         "no_services_text": "Xizmat turi topilmadi",
         "no_product_text": "Mahsulot turi topilmadi",
-        "comment_text": "👤 <b>{}</b>:\n<i>{}</i>",
-        "no_comments_text": "Izohlar topilmadi",
+        "comment_header": "Izohlar",
         "admin_text": "Bot Administratori: @username",
         "no_find_text": "Xech narsa topilmadi",
+        "called_text": "<b>{}</b> da siz <b>{}</b> murojat qildiz.",
+        "no_price_text": "Ko`rsatilmagan",
 
         "reply_button": {
             "service_text": "👷‍♂️ Xizmatlar",
@@ -34,6 +35,8 @@ languages = {
             "call_text": "📞 {}",
             "only_uzbekistan": "📍 Uzbekiston bo`ylab",
             "comment_text": "Izohlar",
+            "called_text": "Izoh qoldirish",
+            "no_called_text": "❌ Bekor qilish",
         }
     },
     "ru": {
@@ -46,16 +49,17 @@ languages = {
         "wrong_code_text": "⚠️ Неверный смс код",
         "profile_text": "🆔 <code>{}</code>\n👤 <b>{}</b>\n🌇 <b>{}</b>\n☎️ <code>{}</code>",
         "find_text": "В <b>{}</b> найдено <b>{}</b>\n\n",
-        "service_info_text": "<b>Имя:</b> {}\n<b>Профессия:</b> {}\n<b>Рейтинг:</b> ⭐️{}\n<b>Цена:</b> {} UZS\n<b>Область:</b> {}\n<b>В этом сфере:</b> {}\n<b>График работы:</b> {} - {}",
-        "product_info_text": "<b>Название:</b> {}\n<b>Тип:</b> {}\n<b>Рейтинг:</b> ⭐️{}\n<b>Цена:</b> {} - {} UZS\n<b>Область:</b> {}",
+        "service_info_text": "<b>Имя:</b> {}\n<b>Профессия:</b> {}\n<b>Рейтинг:</b> ⭐️{}\n<b>Цена:</b> {} UZS\n<b>Область:</b> {}\n<b>В этом сфере:</b> {}\n📍 <a href='{}'>Адрес</a>\n\n{}",
+        "product_info_text": "<b>Название:</b> {}\n<b>Тип:</b> {}\n<b>Рейтинг:</b> ⭐️{}\n<b>Цена:</b> {} - {} UZS\n<b>Область:</b> {}\n📍 <a href='{}'>Адрес</a>\n\n{}",
         "choose_service_category": "Выберите вид сервиса:",
         "choose_product_category": "Выберите продукт:",
         "no_services_text": "Не найдено сервисов",
         "no_products_text": "Не найдено продуктов",
-        "comment_text": "👤 <b>{}</b>:\n<i>{}</i>",
-        "no_comments_text": "Комментари не найдено",
+        "comment_header": "Комментарии",
         "admin_text": "Администратор бота: @username",
         "no_find_text": "Ничего не найдено",
+        "called_text": "В <b>{}</b> вы позвонили <b>{}</b>.",
+        "no_price_text": "Не задано",
 
         "reply_button": {
             "service_text": "👷‍♂️ Сервисы",
@@ -71,6 +75,8 @@ languages = {
             "call_text": "📞 {}",
             "only_uzbekistan": "📍 Весь Узбекистан",
             "comment_text": "Комментарии",
+            "called_text": "Оставить комментарие",
+            "no_called_text": "❌ Отменить",
         }
     },
     "en": {
@@ -83,16 +89,17 @@ languages = {
         "wrong_code_text": "⚠️ Sms code is incorrect",
         "profile_text": "🆔 <code>{}</code>\n👤 <b>{}</b>\n🌇 <b>{}</b>\n☎️ <code>{}</code>",
         "find_text": "In <b>{}</b> find <b>{}</b>\n\n",
-        "service_info_text": "<b>Name:</b> {}\n<b>Professional:</b> {}\n<b>Rating:</b> ⭐️{}\n<b>Price:</b> {} UZS\n<b>Region:</b> {}\n<b>Since:</b> {}\n<b>Work time:</b> {} - {}",
-        "product_info_text": "<b>Name:</b> {}\n<b>Type:</b> {}\n<b>Rating:</b> ⭐️{}\n<b>Price:</b> {} - {} UZS\n<b>Region:</b> {}",
+        "service_info_text": "<b>Name:</b> {}\n<b>Professional:</b> {}\n<b>Rating:</b> ⭐️{}\n<b>Price:</b> {} UZS\n<b>Region:</b> {}\n<b>Since:</b> {}\n📍 <a href='{}'>Address</a>\n\n{}",
+        "product_info_text": "<b>Name:</b> {}\n<b>Type:</b> {}\n<b>Rating:</b> ⭐️{}\n<b>Price:</b> {} - {} UZS\n<b>Region:</b> {}\n📍 <a href='{}'>Address</a>\n\n{}",
         "choose_service_category": "Choose service category:",
         "choose_product_category": "Choose product category:",
         "no_services_text": "No services",
         "no_products_text": "No products",
-        "comment_text": "👤 <b>{}</b>:\n<i>{}</i>",
-        "no_comments_text": "No comments",
+        "comment_header": "Comments",
         "admin_text": "Administrator: @username",
         "no_find_text": "No find",
+        "called_text": "You called in <b>{}</b> to <b>{}</b>",
+        "no_price_text": "not shown",
 
         "reply_button": {
             "service_text": "👷‍♂️ Services",
@@ -108,6 +115,8 @@ languages = {
             "call_text": "📞 {}",
             "only_uzbekistan": "📍 Only Uzbekistan",
             "comment_text": "Comments",
+            "called_text": "Write comment",
+            "no_called_text": "❌ Cancel",
         }
     },
 }

@@ -1,9 +1,10 @@
 from aiogram.filters.callback_data import CallbackData
-from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton
+from aiogram.types import InlineKeyboardMarkup, InlineKeyboardButton, MenuButtonWebApp, WebAppInfo
 from aiogram.utils.keyboard import InlineKeyboardBuilder
 from utils.bot_context import languages
 
-from data.config import API_URL
+from data.config import API_URL, COMMENTS_URL
+import math
 
 
 class Lang(CallbackData, prefix='lang'):
@@ -54,7 +55,7 @@ async def choose_language_btn():
     return btn
 
 
-async def service_btn(lang: str, phone_number, stuff_id: int):
+async def call_btn(lang: str, phone_number, stuff_id: int, type: str):
     btn = InlineKeyboardMarkup(
         inline_keyboard=[
             [
@@ -64,16 +65,17 @@ async def service_btn(lang: str, phone_number, stuff_id: int):
             ],
             [
                 InlineKeyboardButton(text=languages[lang]['reply_button']['comment_text'],
-                                     callback_data=StaffComment(id=stuff_id).pack())
+                                     web_app=WebAppInfo(
+                                         url=f"{COMMENTS_URL}/?stuff_id={stuff_id}&type={type}&header={languages[lang]['comment_header']}"))
             ]
         ]
     )
     return btn
 
 
-async def service_pagination_btn(staffs: list, current_page: int, total: int, in_page: int = 3):
+async def service_pagination_btn(staffs: list, current_page: int, total: int, in_page: int = 5):
     btn = InlineKeyboardBuilder()
-    pages = round(total / in_page)
+    pages = math.ceil(total / in_page)
     prev_p = current_page - 1 if current_page > 1 else 1
     next_p = current_page + 1 if current_page < pages else pages
     btn.add(
@@ -119,26 +121,9 @@ async def stuff_comment_btn(comments: int):
     )
     if comments > 1:
         btn.inline_keyboard.append([
-                InlineKeyboardButton(text="◀️", callback_data="prev"),
-                InlineKeyboardButton(text="▶️", callback_data="next"),
-            ])
-    return btn
-
-
-async def product_btn(lang: str, phone_number, product_id: int):
-    btn = InlineKeyboardMarkup(
-        inline_keyboard=[
-            [
-                InlineKeyboardButton(
-                    text=languages[lang]['reply_button']['call_text'].format(phone_number),
-                    url=f"{API_URL}/call/?phone={phone_number}"),
-            ],
-            [
-                InlineKeyboardButton(text=languages[lang]['reply_button']['comment_text'],
-                                     callback_data=ProductComment(id=product_id).pack())
-            ]
-        ]
-    )
+            InlineKeyboardButton(text="◀️", callback_data="prev"),
+            InlineKeyboardButton(text="▶️", callback_data="next"),
+        ])
     return btn
 
 
@@ -152,8 +137,7 @@ async def product_comment_btn(comments: int):
     )
     if comments > 1:
         btn.inline_keyboard.append([
-                InlineKeyboardButton(text="◀️", callback_data="prev"),
-                InlineKeyboardButton(text="▶️", callback_data="next"),
-            ])
+            InlineKeyboardButton(text="◀️", callback_data="prev"),
+            InlineKeyboardButton(text="▶️", callback_data="next"),
+        ])
     return btn
-

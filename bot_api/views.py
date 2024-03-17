@@ -12,6 +12,7 @@ from bot_api.serializers import TelegramUserSerializer, RegionsSerializer, Servi
     ProductCommentsSerializer
 from . import models
 from .utils import filter_profile_locations
+from django.core.paginator import Paginator
 
 
 class TelegramUserCreateAPIView(APIView):
@@ -77,17 +78,20 @@ class SearchServiceAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, *args, **kwargs):
-        limit = 3
+        limit = 5
         user_id = request.GET['user_id']
         service = request.GET['service']
-        offset = int(request.GET['offset']) - 1
+        offset = int(request.GET['offset'])
         user = models.TgUser.objects.get(user_id=int(user_id))
         if user.all_regions:
             services = models.Service.objects.all().order_by('-rating')
         else:
             services = models.ServiceStuff.objects.filter(city=user.city, service__name=service).order_by('-rating')
+
         total_services = len(services)
-        serializer = ServiceStuffSerializer(instance=services[offset:offset + limit], many=True)
+        p = Paginator(services, limit)
+        services = p.page(offset)
+        serializer = ServiceStuffSerializer(instance=services, many=True)
         user_serizlier = TelegramUserSerializer(instance=user)
         return Response({'services': serializer.data, 'user': user_serizlier.data, 'total_services': total_services},
                         status=status.HTTP_200_OK)
@@ -129,7 +133,8 @@ class StuffCommentsAPIView(APIView):
     permission_classes = [permissions.AllowAny]
 
     def get(self, request, *args, **kwargs):
-        stuff_id = request.GET['stuff_id']
+        stuff_id = request.GET['id']
+        print(stuff_id)
         stuff_comments = models.ServiceRating.objects.filter(stuff__id=stuff_id).order_by('-created_at')
         serializer = StuffCommentsSerializer(instance=stuff_comments[:3], many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
