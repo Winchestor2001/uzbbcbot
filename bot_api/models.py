@@ -31,7 +31,7 @@ class TgUser(models.Model):
     phone_number = models.CharField(max_length=50, blank=True, null=True)
     is_active = models.BooleanField(default=False)
     language = models.CharField(max_length=10, choices=LANGUAGES, default='uz')
-    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True)
+    city = models.ManyToManyField(City, null=True, blank=True)
     all_regions = models.BooleanField(default=False)
 
     def __str__(self):

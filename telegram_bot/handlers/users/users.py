@@ -91,6 +91,8 @@ async def user_region_state(message: Message, state: FSMContext):
     else:
         await state.update_data(region=user_region)
         cities = await get_region_cities((await get_regions()), user_region)
+        user_region = languages[data['lang']]['only_cities'].format(user_region)
+        cities.insert(0, user_region)
         btn = await subs_btn(cities)
         await message.answer(languages[data['lang']]['choose_city_handler'], reply_markup=btn)
         await state.set_state(UserStates.city)
@@ -100,6 +102,8 @@ async def user_region_state(message: Message, state: FSMContext):
 async def user_city_state(message: Message, state: FSMContext):
     user_city = message.text
     data = await state.get_data()
+    if user_city in data['region']:
+        user_city = data['region']
     await verify_user(
         user_id=message.from_user.id,
         phone_number=data['phone_number'],

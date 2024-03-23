@@ -32,8 +32,9 @@ class TelegramUserSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         data = super(TelegramUserSerializer, self).to_representation(instance)
-        if instance.city:
-            data['city'] = f"{instance.city.region.name} - {instance.city.name}"
+        if instance.city.all():
+            cities = instance.city.all()
+            data['city'] = [f"{city.region.name} - {city.name}" for city in cities]
         return data
 
 

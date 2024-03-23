@@ -54,7 +54,10 @@ async def regions_btn(lang: str, regions: list):
 async def subs_btn(cities: list, lang=False):
     btn = ReplyKeyboardBuilder()
     btn.add(
-        *[KeyboardButton(text=item) for item in cities]
+        KeyboardButton(text=cities[0])
+    )
+    btn.add(
+        *[KeyboardButton(text=item) for item in cities[1:]]
     )
     if lang:
         btn.add(

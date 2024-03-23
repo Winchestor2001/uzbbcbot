@@ -1,0 +1,53 @@
+version: '3'
+
+services:
+  db:
+    image: postgres
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - 15432:5432
+  
+  redis:
+    image: redis:rc-alpine3.12
+    restart: on-failure
+    ports:
+      - 16380:6379
+
+  web:
+    build: .
+    image: uzbbcbot:latest
+    command: python manage.py runserver 0.0.0.0:8000
+    env_file:
+      - .env
+    environment:
+      PYTHONPATH: /uzbbcbot
+    volumes:
+      - .:/uzbbcbot
+      - static_volume:/uzbbcbot/static/
+      - media_volume:/uzbbcbot/media/
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+  
+  bot:
+    image: uzbbcbot:latest
+    restart: on-failure
+    env_file:
+      - .env
+    command: >
+      bash -c "python3 telegram_bot/app.py"
+    environment:
+      PYTHONPATH: /uzbbcbot
+    volumes:
+      - .:/uzbbcbot
+    depends_on:
+      - db
+      - web
+      - redis
+      
+volumes:
+  static_volume:
+  media_volume:

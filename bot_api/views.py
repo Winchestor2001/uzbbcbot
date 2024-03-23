@@ -1,3 +1,4 @@
+import logging
 import random
 import re
 
@@ -64,7 +65,15 @@ class UpdateUserInfoAPIView(APIView):
         user = models.TgUser.objects.get(user_id=int(user_id))
         user.phone_number = phone_number
         if city != 'no':
-            user.city = models.City.objects.get(name=city)
+            city_obj = models.City.objects.filter(name=city)
+            if city_obj.exists():
+                user.city.add(city)
+            else:
+                region = models.Region.objects.get(name=city)
+                cities = models.City.objects.filter(region=region)
+                for c in cities:
+                    user.city.add(c)
+
             user.all_regions = False
         else:
             user.all_regions = True
