@@ -1,8 +1,8 @@
 from django.db import models
-from bot_api.models import TgUser, ServiceStuff, ProductDetail
+from bot_api.models import TgUser, ServiceStuff, ProductDetail, CustomBaseModel
 
 
-class NotifyTasks(models.Model):
+class NotifyTasks(CustomBaseModel):
     TYPE = (
         ('service', 'service'),
         ('product', 'product'),
@@ -10,7 +10,6 @@ class NotifyTasks(models.Model):
     user = models.ForeignKey(TgUser, on_delete=models.CASCADE)
     receiver = models.IntegerField()
     type = models.CharField(max_length=50, choices=TYPE)
-    created_at = models.TimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.user}"

@@ -3,7 +3,15 @@ from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 
-class Region(models.Model):
+class CustomBaseModel(models.Model):
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        abstract = True
+
+
+class Region(CustomBaseModel):
     name = models.CharField(max_length=100)
     is_visible = models.BooleanField(default=True)
 
@@ -11,7 +19,7 @@ class Region(models.Model):
         return self.name
 
 
-class City(models.Model):
+class City(CustomBaseModel):
     name = models.CharField(max_length=100)
     region = models.ForeignKey(Region, on_delete=models.CASCADE)
 
@@ -19,7 +27,7 @@ class City(models.Model):
         return self.name
 
 
-class TgUser(models.Model):
+class TgUser(CustomBaseModel):
     LANGUAGES = (
         ('uz', 'uz'),
         ('ru', 'ru'),
@@ -38,14 +46,14 @@ class TgUser(models.Model):
         return f"{self.user_id} - {self.username}"
 
 
-class ProductCategory(models.Model):
+class ProductCategory(CustomBaseModel):
     name = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name
 
 
-class Product(models.Model):
+class Product(CustomBaseModel):
     name = models.CharField(max_length=200)
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
 
@@ -53,14 +61,14 @@ class Product(models.Model):
         return self.name
 
 
-class ServiceCategory(models.Model):
+class ServiceCategory(CustomBaseModel):
     name = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name
 
 
-class Service(models.Model):
+class Service(CustomBaseModel):
     name = models.CharField(max_length=200)
     category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE)
 
@@ -68,7 +76,7 @@ class Service(models.Model):
         return self.name
 
 
-class ServiceStuff(models.Model):
+class ServiceStuff(CustomBaseModel):
     fullname = models.CharField(max_length=100)
     service = models.ForeignKey(Service, on_delete=models.SET_NULL, blank=True, null=True)
     city = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True)
@@ -83,7 +91,7 @@ class ServiceStuff(models.Model):
         return self.fullname
 
 
-class ProductDetail(models.Model):
+class ProductDetail(CustomBaseModel):
     fullname = models.CharField(max_length=200)
     from_price = models.FloatField()
     to_price = models.FloatField()
@@ -98,32 +106,32 @@ class ProductDetail(models.Model):
         return self.fullname
 
 
-class ServiceRating(models.Model):
+class ServiceRating(CustomBaseModel):
     tg_user = models.ForeignKey(TgUser, on_delete=models.CASCADE)
     stuff = models.ForeignKey(ServiceStuff, on_delete=models.CASCADE)
     rating = models.FloatField()
     comment = models.CharField(max_length=250)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.tg_user} - {self.rating}"
 
 
-class ProductRating(models.Model):
+class ProductRating(CustomBaseModel):
     tg_user = models.ForeignKey(TgUser, on_delete=models.CASCADE)
     product_detail = models.ForeignKey(ProductDetail, on_delete=models.CASCADE)
     rating = models.FloatField()
     comment = models.CharField(max_length=250)
-    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"{self.tg_user} - {self.rating}"
 
 
-class AboutBot(models.Model):
+class AboutBot(CustomBaseModel):
     video = models.FileField(upload_to='video/')
     description = models.TextField()
     comment_request_time = models.PositiveIntegerField(default=1)
 
     def __str__(self):
         return "About Bot"
+
+    

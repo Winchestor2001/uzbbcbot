@@ -111,14 +111,8 @@ class CallAPIView(TemplateView):
     template_name = 'call.html'
 
     def get_context_data(self, **kwargs):
-        pattern = r"Windows|Linux|Macintosh|Mac OS X"
-        match = re.search(pattern, self.request.META['HTTP_USER_AGENT'])
-        if match:
-            context = {"error": "Permission denied"}
-        else:
-            context = super().get_context_data(**kwargs)
-            context['phone'] = self.request.GET.get('phone')
-
+        context = super().get_context_data(**kwargs)
+        context['phone'] = self.request.GET.get('phone')
         return context
 
 
