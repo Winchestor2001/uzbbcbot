@@ -10,6 +10,7 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
+import os
 from pathlib import Path
 from environs import Env
 
@@ -92,11 +93,11 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': env.str("DB_NAME"),
-            'USER': env.str("DB_USER"),
-            'PASSWORD': env.str("DB_PASSWORD"),
-            'HOST': env.str("DB_HOST"),
-            'PORT': env.int("DB_PORT"),
+            'NAME': env.str("POSTGRES_DB"),
+            'USER': env.str("POSTGRES_USER"),
+            'PASSWORD': env.str("POSTGRES_PASSWORD"),
+            'HOST': env.str("POSTGRES_HOST"),
+            'PORT': env.int("POSTGRES_PORT"),
         }
     }
 
@@ -310,3 +311,34 @@ CELERY_RESULT_SERIALIZER = env.str("CELERY_RESULT_SERIALIZER")
 
 
 CORS_ALLOW_ALL_ORIGINS = True
+
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'formatter': 'verbose',
+            'filename': os.getenv('LOG_PATH'),
+        },
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+        }
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['file', 'console'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}

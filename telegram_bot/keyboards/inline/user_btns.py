@@ -66,7 +66,7 @@ async def call_btn(lang: str, phone_number, stuff_id: int, type: str):
             [
                 InlineKeyboardButton(text=languages[lang]['reply_button']['comment_text'],
                                      web_app=WebAppInfo(
-                                         url=f"{COMMENTS_URL}/?stuff_id={stuff_id}&type={type}&header={languages[lang]['comment_header']}"))
+                                         url=f"{COMMENTS_URL}/?id={stuff_id}&type={type}&header={languages[lang]['comment_header']}"))
             ]
         ]
     )
