@@ -43,3 +43,13 @@ def count_ratings(ratings):
         return round(voted_stars / 10 / voted, 1)
     return 0.0
 
+
+def sort_subcategory(obj: list, action: str):
+    result = []
+
+    for item in obj:
+        result.append(item[action])
+    
+    return list(set(result))
+
+

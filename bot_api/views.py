@@ -12,7 +12,7 @@ from bot_api.serializers import TelegramUserSerializer, RegionsSerializer, Servi
     ServiceStuffSerializer, StuffCommentsSerializer, ProductCategorySerializer, ProductDetailSerializer, \
     ProductCommentsSerializer
 from . import models
-from .utils import filter_profile_locations
+from .utils import sort_subcategory
 from django.core.paginator import Paginator
 
 
@@ -73,6 +73,7 @@ class UpdateUserInfoAPIView(APIView):
                 cities = models.City.objects.filter(region=region)
                 for c in cities:
                     user.city.add(c)
+                user.single_regions = True
 
             user.all_regions = False
         else:
@@ -95,7 +96,7 @@ class SearchServiceAPIView(APIView):
         if user.all_regions:
             services = models.Service.objects.all().order_by('-rating')
         else:
-            services = models.ServiceStuff.objects.filter(city=user.city, service__name=service).order_by('-rating')
+            services = models.ServiceStuff.objects.filter(city__in=user.city.all(), service__name=service).order_by('-rating')
 
         total_services = len(services)
         p = Paginator(services, limit)
@@ -143,7 +144,6 @@ class StuffCommentsAPIView(APIView):
 
     def get(self, request, *args, **kwargs):
         stuff_id = request.GET['id']
-        print(stuff_id)
         stuff_comments = models.ServiceRating.objects.filter(stuff__id=stuff_id).order_by('-created_at')
         serializer = StuffCommentsSerializer(instance=stuff_comments[:3], many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -168,7 +168,7 @@ class SearchProductAPIView(APIView):
         if user.all_regions:
             products = models.ProductDetail.objects.all().order_by('-rating')
         else:
-            products = models.ProductDetail.objects.filter(city=user.city, product__name=product).order_by('-rating')
+            products = models.ProductDetail.objects.filter(city__in=user.city.all(), product__name=product).order_by('-rating')
         total_products = len(products)
         serializer = ProductDetailSerializer(instance=products[offset:offset + limit], many=True)
         user_serizlier = TelegramUserSerializer(instance=user)
@@ -194,3 +194,22 @@ class ProductCommentsAPIView(APIView):
         product_comments = models.ProductRating.objects.filter(product_detail__id=product_id).order_by('-created_at')
         serializer = ProductCommentsSerializer(instance=product_comments[:3], many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class SearchAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        q = request.GET.get('q')
+        user = models.TgUser.objects.get(user_id=request.GET['user_id'])
+        services = models.ServiceStuff.objects.filter(service__name__icontains=q).filter(city__in=user.city.all())
+        if services.exists():
+            serializer = ServiceStuffSerializer(instance=services, many=True)
+            serializer = sort_subcategory(serializer.data, 'service')
+            return Response({"result": serializer, "to_state": "service"}, status=status.HTTP_200_OK)
+        else:
+            products = models.ProductDetail.objects.filter(product__name__icontains=q).filter(city__in=user.city.all())
+            serializer = ProductDetailSerializer(instance=products, many=True)
+            serializer = sort_subcategory(serializer.data, 'product')
+            return Response({"result": serializer, "to_state": "product"}, status=status.HTTP_200_OK)
+

@@ -16,6 +16,7 @@ urlpatterns = [
     path('search_products/', views.SearchProductAPIView.as_view()),
     path('product_info/', views.ProductInfoAPIView.as_view()),
     path('product_comments/', views.ProductCommentsAPIView.as_view()),
+    path('search/', views.SearchAPIView.as_view()),
 
     path('call/', views.CallAPIView.as_view()),
 ]

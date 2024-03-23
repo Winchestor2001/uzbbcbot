@@ -3,12 +3,12 @@ from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
-from keyboards.default.user_btns import start_command_btn
+from keyboards.default.user_btns import search_category_btn, start_command_btn
 from keyboards.inline.user_btns import choose_language_btn
 from utils.bot_context import languages
 
 from states.AllStates import UserStates
-from utils.api_connections import update_user_language
+from utils.api_connections import search_by_text, update_user_language
 from aiogram import Router
 
 from keyboards.default.user_btns import send_phone_number_btn, regions_btn
@@ -17,7 +17,7 @@ from utils.api_connections import get_regions, verify_user
 
 from utils.api_connections import get_user_info
 
-from filters.user_filters import BtnLangCheck
+from filters.user_filters import BtnLangCheck, SearchTextLength
 from keyboards.default.user_btns import profile_btn
 
 from keyboards.default.user_btns import subs_btn
@@ -91,7 +91,7 @@ async def user_region_state(message: Message, state: FSMContext):
     else:
         await state.update_data(region=user_region)
         cities = await get_region_cities((await get_regions()), user_region)
-        user_region = languages[data['lang']]['only_cities'].format(user_region)
+        user_region = languages[data['lang']]['reply_button']['only_cities'].format(user_region)
         cities.insert(0, user_region)
         btn = await subs_btn(cities)
         await message.answer(languages[data['lang']]['choose_city_handler'], reply_markup=btn)
@@ -102,7 +102,7 @@ async def user_region_state(message: Message, state: FSMContext):
 async def user_city_state(message: Message, state: FSMContext):
     user_city = message.text
     data = await state.get_data()
-    if user_city in data['region']:
+    if data['region'] in user_city:
         user_city = data['region']
     await verify_user(
         user_id=message.from_user.id,
@@ -224,3 +224,31 @@ async def user_add_rating_handler(message: Message, state: FSMContext):
 @router.callback_query(F.data == 'no_called')
 async def user_no_called_callback(c: CallbackQuery):
     await c.message.delete()
+
+
+@router.message(BtnLangCheck('search_text'))
+async def user_search_handler(message: Message, state: FSMContext):
+    data = await state.get_data()
+    lang = data['lang']
+    context = languages[lang]['search_text']
+    await message.answer(context)
+    await state.set_state(UserStates.search)
+
+
+@router.message(UserStates.search, F.text, SearchTextLength())
+async def user_search_state(message: Message, state: FSMContext):
+    data = await state.get_data()
+    lang = data['lang']
+    search_text = message.text
+    find_data = await search_by_text(
+        user_id=message.from_user.id,
+        text=search_text
+    )
+    if find_data:
+        context = "🔎"
+        btn = await search_category_btn(lang, find_data['result'])
+        await message.answer(context, reply_markup=btn)
+        await state.set_state(eval(f"UserStates.{find_data['to_state']}"))
+    else:
+        context = languages[lang]['no_find_text']
+        await message.answer(context)

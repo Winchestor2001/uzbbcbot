@@ -20,6 +20,8 @@ languages = {
         "no_find_text": "Xech narsa topilmadi",
         "called_text": "<b>{}</b> da siz <b>{}</b> murojat qildiz.",
         "no_price_text": "Ko`rsatilmagan",
+        "search_text": "✍️ Kamida 3ta belgi yozing:",
+        "min_text": "⚠️ Eng kami 3 xarif bo`lishi lozim",
 
         "reply_button": {
             "service_text": "👷‍♂️ Xizmatlar",
@@ -38,6 +40,7 @@ languages = {
             "comment_text": "Izohlar",
             "called_text": "Izoh qoldirish",
             "no_called_text": "❌ Bekor qilish",
+            "search_text": "🔎 Tez qidiruv",
         }
     },
     "ru": {
@@ -61,6 +64,8 @@ languages = {
         "no_find_text": "Ничего не найдено",
         "called_text": "В <b>{}</b> вы позвонили <b>{}</b>.",
         "no_price_text": "Не задано",
+        "search_text": "✍️ Напишите минимум 3 буквы:",
+        "min_text": "⚠️ Напишите минимум 3 букв",
 
         "reply_button": {
             "service_text": "👷‍♂️ Сервисы",
@@ -79,6 +84,7 @@ languages = {
             "comment_text": "Комментарии",
             "called_text": "Оставить комментарие",
             "no_called_text": "❌ Отменить",
+            "search_text": "🔎 Быстрый поиск",
         }
     },
     "en": {
@@ -102,6 +108,8 @@ languages = {
         "no_find_text": "No find",
         "called_text": "You called in <b>{}</b> to <b>{}</b>",
         "no_price_text": "not shown",
+        "search_text": "✍️ Enter minimum 3 words:",
+        "min_text": "⚠️ Minimum words is 3",
 
         "reply_button": {
             "service_text": "👷‍♂️ Services",
@@ -120,6 +128,7 @@ languages = {
             "comment_text": "Comments",
             "called_text": "Write comment",
             "no_called_text": "❌ Cancel",
+            "search_text": "🔎 Fast Search",
         }
     },
 }

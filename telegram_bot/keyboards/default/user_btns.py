@@ -11,6 +11,9 @@ async def start_command_btn(lang: str):
         resize_keyboard=True,
         keyboard=[
             [
+                KeyboardButton(text=languages[lang]["reply_button"]["search_text"]),
+            ],
+            [
                 KeyboardButton(text=languages[lang]["reply_button"]["service_text"]),
                 KeyboardButton(text=languages[lang]["reply_button"]["product_text"])
             ],
@@ -90,4 +93,13 @@ async def choose_category_btn(lang: str, categories: list):
     return btn.as_markup(resize_keyboard=True)
 
 
+async def search_category_btn(lang: str, categories: list):
+    btn = ReplyKeyboardBuilder()
+    btn.add(
+        *[KeyboardButton(text=item) for item in categories],
+
+        KeyboardButton(text=languages[lang]['reply_button']['back_text'])
+    )
+    btn.adjust(2)
+    return btn.as_markup(resize_keyboard=True)
 
