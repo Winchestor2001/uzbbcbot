@@ -31,6 +31,10 @@ class ProductComment(CallbackData, prefix='product_comment'):
     id: int
 
 
+class Rating(CallbackData, prefix='rating'):
+    rating: int
+
+
 async def choose_language_btn():
     btn = InlineKeyboardMarkup(
         inline_keyboard=[
@@ -55,13 +59,13 @@ async def choose_language_btn():
     return btn
 
 
-async def call_btn(lang: str, phone_number, stuff_id: int, type: str):
+async def call_btn(lang: str, phone_number, stuff_id: int, type: str, user_id: int):
     btn = InlineKeyboardMarkup(
         inline_keyboard=[
             [
                 InlineKeyboardButton(
                     text=languages[lang]['reply_button']['call_text'].format(phone_number),
-                    url=f"{API_URL}/call/?phone={phone_number}"),
+                    url=f"{API_URL}/call/?phone={phone_number}&id={stuff_id}&type={type}&user_id={user_id}"),
             ],
             [
                 InlineKeyboardButton(text=languages[lang]['reply_button']['comment_text'],
@@ -141,3 +145,13 @@ async def product_comment_btn(comments: int):
             InlineKeyboardButton(text="▶️", callback_data="next"),
         ])
     return btn
+
+
+async def rating_btn():
+    btn = InlineKeyboardBuilder()
+
+    btn.add(
+        *[InlineKeyboardButton(text=f"{i}", callback_data=Rating(rating=i).pack()) for i in range(1, 11)],
+    )
+    btn.adjust(5)
+    return btn.as_markup()

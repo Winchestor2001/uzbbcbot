@@ -4,11 +4,11 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
 from keyboards.default.user_btns import search_category_btn, start_command_btn
-from keyboards.inline.user_btns import choose_language_btn
+from keyboards.inline.user_btns import Rating, choose_language_btn, rating_btn
 from utils.bot_context import languages
 
 from states.AllStates import UserStates
-from utils.api_connections import search_by_text, update_user_language
+from utils.api_connections import add_product_review, add_service_review, search_by_text, update_user_language
 from aiogram import Router
 
 from keyboards.default.user_btns import send_phone_number_btn, regions_btn
@@ -192,40 +192,6 @@ async def prev_callback(c: CallbackQuery, state: FSMContext):
         await c.message.edit_text(context, reply_markup=c.message.reply_markup)
 
 
-@router.callback_query(F.data.startswith('called'))
-async def user_called_callback(c: CallbackQuery, state: FSMContext):
-    data = await state.get_data()
-    lang = data['lang']
-    _, datatype, receiver = c.data.split(':')
-    await state.update_data(datatype=datatype, receiver=receiver)
-    await c.message.edit_text(languages[lang]['write_comment_text'])
-    await state.set_state(UserStates.add_comment)
-
-
-@router.message(UserStates.add_comment)
-async def user_add_comment_handler(message: Message, state: FSMContext):
-    data = await state.get_data()
-    lang = data['lang']
-    await state.update_data(comment=message.text)
-    await message.answer(languages[lang]['write_rating_text'])
-    await state.set_state(UserStates.add_rating)
-
-
-@router.message(UserStates.add_rating, F.text.isdigit())
-async def user_add_rating_handler(message: Message, state: FSMContext):
-    data = await state.get_data()
-    lang = data['lang']
-    rating = int(message.text)
-    if 0 < rating > 11:
-        await message.answer(languages[lang]['added_comment'])
-        await state.set_state(None)
-
-
-@router.callback_query(F.data == 'no_called')
-async def user_no_called_callback(c: CallbackQuery):
-    await c.message.delete()
-
-
 @router.message(BtnLangCheck('search_text'))
 async def user_search_handler(message: Message, state: FSMContext):
     data = await state.get_data()
@@ -252,3 +218,63 @@ async def user_search_state(message: Message, state: FSMContext):
     else:
         context = languages[lang]['no_find_text']
         await message.answer(context)
+
+
+@router.callback_query(F.data.startswith('called'))
+async def user_add_review_callback(c: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    lang = data['lang']
+    _, datatype, receiver_id = c.data.split(':')
+
+    btn = await rating_btn()
+    context = languages[lang]['add_rating']
+    await c.message.edit_text(text=context, reply_markup=btn)
+    
+    await state.update_data(datatype=datatype, receiver_id=receiver_id)
+    await state.set_state(UserStates.add_rating)
+
+
+@router.callback_query(UserStates.add_rating, Rating.filter())
+async def user_add_rating_callback(c: CallbackQuery, state: FSMContext):
+    data = await state.get_data()
+    lang = data['lang']
+    rating = c.data.split(':')[-1]
+    await state.update_data(rating=rating)
+
+    context = languages[lang]['add_commant']
+    await c.message.edit_text(text=context)
+
+    await state.set_state(UserStates.add_comment)
+
+
+@router.callback_query(UserStates.add_comment, F.text)
+async def user_add_comment_callback(message: Message, state: FSMContext):
+    user_id = message.from_user.id
+    data = await state.get_data()
+    lang = data['lang']
+    rating = data['rating']
+    datatype = data['datatype']
+    receiver_id = data['receiver_id']
+    comment = message.text
+    context = languages[lang]['review_added']
+    await message.answer(text=context)
+    await start_command(message, state)
+    if datatype == 'service':
+        await add_service_review(
+            user_id=user_id,
+            service_id=receiver_id,
+            rating=rating,
+            comment=comment
+        )
+    else:
+        await add_product_review(
+            user_id=user_id,
+            product_id=receiver_id,
+            rating=rating,
+            comment=comment
+        )
+
+
+@router.callback_query(F.data == 'no_called')
+async def user_no_add_rating_callback(c: CallbackQuery, state: FSMContext):
+    await c.message.delete()

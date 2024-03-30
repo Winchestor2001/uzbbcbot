@@ -81,7 +81,7 @@ class ServiceStuff(CustomBaseModel):
     service = models.ForeignKey(Service, on_delete=models.SET_NULL, blank=True, null=True)
     city = models.ForeignKey(City, on_delete=models.SET_NULL, blank=True, null=True)
     experience = models.PositiveIntegerField(blank=True, null=True)
-    price = models.FloatField(blank=True, null=True)
+    price = models.FloatField(default=0)
     phone_number = models.CharField(max_length=50, null=True, blank=True)
     rating = models.FloatField(default=0.0)
     description = models.TextField(blank=True, null=True)
@@ -109,7 +109,7 @@ class ProductDetail(CustomBaseModel):
 class ServiceRating(CustomBaseModel):
     tg_user = models.ForeignKey(TgUser, on_delete=models.CASCADE)
     stuff = models.ForeignKey(ServiceStuff, on_delete=models.CASCADE)
-    rating = models.FloatField()
+    rating = models.IntegerField()
     comment = models.CharField(max_length=250)
 
     def __str__(self):
@@ -119,7 +119,7 @@ class ServiceRating(CustomBaseModel):
 class ProductRating(CustomBaseModel):
     tg_user = models.ForeignKey(TgUser, on_delete=models.CASCADE)
     product_detail = models.ForeignKey(ProductDetail, on_delete=models.CASCADE)
-    rating = models.FloatField()
+    rating = models.IntegerField()
     comment = models.CharField(max_length=250)
 
     def __str__(self):

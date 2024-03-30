@@ -1,5 +1,8 @@
 from aiohttp import ClientSession
-from data.config import API_URL
+from telegram_bot.data.config import API_URL
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 async def add_user(user_id: int, username: str):
@@ -145,3 +148,20 @@ async def search_by_text(user_id: int, text: str):
                 return await response.json()
             else:
                 return []
+
+
+async def add_service_review(user_id: int, service_id: int, rating: int, comment: str):
+    data = {'user_id': user_id, "service_id": service_id, "rating": rating, "comment": comment}
+    async with ClientSession() as session:
+        async with session.post(f"{API_URL}/stuff_comments/", params=data) as response:
+            if response.status == 200:
+                return await response.json()
+
+
+async def add_product_review(user_id: int, product_id: int, rating: int, comment: str):
+    data = {'user_id': user_id, "product_id": product_id, "rating": rating, "comment": comment}
+    async with ClientSession() as session:
+        async with session.post(f"{API_URL}/product_comments/", params=data) as response:
+            if response.status == 200:
+                return await response.json()
+            

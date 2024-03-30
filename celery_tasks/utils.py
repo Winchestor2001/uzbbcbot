@@ -19,7 +19,8 @@ def send_message_to_user(user, lang: str, receiver, datatype):
     params = {
         "chat_id": user.user.user_id,
         "text": languages[lang]['called_text'].format(date, receiver.fullname),
-        "reply_markup": json.dumps(reply_markup)
+        "reply_markup": json.dumps(reply_markup),
+        "parse_mode": "HTML"
     }
     response = requests.post(url, data=params)
     if response.status_code == 200:

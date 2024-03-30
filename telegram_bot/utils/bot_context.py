@@ -22,6 +22,9 @@ languages = {
         "no_price_text": "Ko`rsatilmagan",
         "search_text": "✍️ Kamida 3ta belgi yozing:",
         "min_text": "⚠️ Eng kami 3 xarif bo`lishi lozim",
+        "add_rating": "Baholang:",
+        "add_commant": "Izoh yozing:",
+        "review_added": "✅ Izoh saqlandi",
 
         "reply_button": {
             "service_text": "👷‍♂️ Xizmatlar",
@@ -66,6 +69,9 @@ languages = {
         "no_price_text": "Не задано",
         "search_text": "✍️ Напишите минимум 3 буквы:",
         "min_text": "⚠️ Напишите минимум 3 букв",
+        "add_rating": "Отцените:",
+        "add_commant": "Напишите отзыв:",
+        "review_added": "✅ Отзыв отправлен",
 
         "reply_button": {
             "service_text": "👷‍♂️ Сервисы",
@@ -110,6 +116,9 @@ languages = {
         "no_price_text": "not shown",
         "search_text": "✍️ Enter minimum 3 words:",
         "min_text": "⚠️ Minimum words is 3",
+        "add_rating": "Grade:",
+        "add_commant": "Write review:",
+        "review_added": "✅ Review added",
 
         "reply_button": {
             "service_text": "👷‍♂️ Services",

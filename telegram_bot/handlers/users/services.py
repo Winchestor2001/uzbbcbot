@@ -53,6 +53,7 @@ async def service_state(message: Message, state: FSMContext):
 
     await state.update_data(service=message.text)
     services = await search_services(user_id=user_id, service=message.text)
+    print(services)
     if services['total_services']:
         city = languages[lang]['reply_button']['only_uzbekistan'] if services['user']['all_regions'] else \
             services['user'][
@@ -93,9 +94,10 @@ async def prev_page_callback(c: CallbackQuery, state: FSMContext):
 async def staff_callback(c: CallbackQuery, state: FSMContext):
     data = await state.get_data()
     lang = data['lang']
+    user_id = c.from_user.id
     stuff_id = int(c.data.split(":")[-1])
     staff_info = await stuff_service(stuff_id)
-    btn = await call_btn(lang, staff_info['phone_number'], stuff_id, 'service')
+    btn = await call_btn(lang, staff_info['phone_number'], stuff_id, 'service', user_id)
     price = staff_info['price'] if staff_info['price'] > 0 else languages[lang]['no_price_text']
     context = languages[lang]['service_info_text'].format(
         staff_info['fullname'], staff_info['service'], staff_info['rating'], price, staff_info['city'],

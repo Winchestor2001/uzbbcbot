@@ -327,7 +327,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'formatter': 'verbose',
-            'filename': os.getenv('LOG_PATH'),
+            'filename': os.getenv('WEB_LOG_PATH'),
         },
         'console': {
             'level': 'DEBUG',

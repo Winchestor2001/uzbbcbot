@@ -1,8 +1,4 @@
 import logging
-import random
-import re
-
-from django.http import HttpResponseRedirect
 from django.views.generic import TemplateView
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
@@ -14,6 +10,10 @@ from bot_api.serializers import TelegramUserSerializer, RegionsSerializer, Servi
 from . import models
 from .utils import sort_subcategory
 from django.core.paginator import Paginator
+from celery_tasks.models import NotifyTasks
+
+
+logger = logging.getLogger('django')
 
 
 class TelegramUserCreateAPIView(APIView):
@@ -94,7 +94,7 @@ class SearchServiceAPIView(APIView):
         offset = int(request.GET['offset'])
         user = models.TgUser.objects.get(user_id=int(user_id))
         if user.all_regions:
-            services = models.Service.objects.all().order_by('-rating')
+            services = models.ServiceStuff.objects.all().order_by('-rating')
         else:
             services = models.ServiceStuff.objects.filter(city__in=user.city.all(), service__name=service).order_by('-rating')
 
@@ -113,6 +113,12 @@ class CallAPIView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['phone'] = self.request.GET.get('phone')
+        user = models.TgUser.objects.get(user_id=self.request.GET.get('user_id'))
+        NotifyTasks.objects.create(
+            user=user,
+            receiver=self.request.GET.get('id'),
+            type=self.request.GET.get('type')
+        )
         return context
 
 
@@ -141,6 +147,18 @@ class StuffCommentsAPIView(APIView):
         stuff_comments = models.ServiceRating.objects.filter(stuff__id=stuff_id).order_by('-created_at')
         serializer = StuffCommentsSerializer(instance=stuff_comments[:3], many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        user_id = request.data.get('user_id')
+        service_id = request.data.get('service_id')
+        rating = request.data.get('rating')
+        comment = request.data.get('comment')
+        models.ServiceRating.objects.create(
+            user=models.TgUser.objects.get(user_id=user_id),
+            service=models.ServiceStuff.objects.get(id=service_id),
+            rating=rating,
+            comment=comment
+        )
 
 
 class GetAllProductAPIView(APIView):
@@ -188,6 +206,18 @@ class ProductCommentsAPIView(APIView):
         product_comments = models.ProductRating.objects.filter(product_detail__id=product_id).order_by('-created_at')
         serializer = ProductCommentsSerializer(instance=product_comments[:3], many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def post(self, request, *args, **kwargs):
+        user_id = request.data.get('user_id')
+        product_id = request.data.get('product_id')
+        rating = request.data.get('rating')
+        comment = request.data.get('comment')
+        models.ServiceRating.objects.create(
+            user=models.TgUser.objects.get(user_id=user_id),
+            product_id=models.ProductRating.objects.get(id=product_id),
+            rating=rating,
+            comment=comment
+        )
 
 
 class SearchAPIView(APIView):
