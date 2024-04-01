@@ -1,4 +1,7 @@
+from django.conf import settings
 from rest_framework.serializers import ModelSerializer
+
+from core.settings import DOMAIN
 from . import models
 from .utils import count_ratings
 
@@ -130,3 +133,13 @@ class ProductCommentsSerializer(ModelSerializer):
         data['tg_user'] = "**" + instance.tg_user.username[2:]
         return data
 
+
+class AboutBotSerializer(ModelSerializer):
+    class Meta:
+        model = models.AboutBot
+        fields = ['video', 'description']
+    
+    def to_representation(self, instance):
+        redata = super().to_representation(instance)
+        redata['video'] = DOMAIN + instance.video.url
+        return redata

@@ -165,3 +165,12 @@ async def add_product_review(user_id: int, product_id: int, rating: int, comment
             if response.status == 200:
                 return await response.json()
             
+
+async def get_about_bot():
+    async with ClientSession() as session:
+        async with session.get(f"{API_URL}/about_bot/") as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return []
+            

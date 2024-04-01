@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django.http import HttpRequest
 from . import models
 from django.db.models import QuerySet
 
@@ -103,9 +104,12 @@ class ProductRatingAdmin(admin.ModelAdmin):
 
 @admin.register(models.AboutBot)
 class AboutBotAdmin(admin.ModelAdmin):
-    list_display = ['id']
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         form.base_fields['comment_request_time'].widget.attrs['placeholder'] = 'Only in minute'
         return form
+
+    def has_add_permission(self, request: HttpRequest) -> bool:
+        count_obj = models.AboutBot.objects.count()
+        return count_obj == 0

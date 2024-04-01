@@ -1,14 +1,15 @@
+import logging
 from aiogram import F
 from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
-from aiogram.types import Message, CallbackQuery
+from aiogram.types import Message, CallbackQuery, InputFile
 
 from keyboards.default.user_btns import search_category_btn, start_command_btn
 from keyboards.inline.user_btns import Rating, choose_language_btn, rating_btn
 from utils.bot_context import languages
 
 from states.AllStates import UserStates
-from utils.api_connections import add_product_review, add_service_review, search_by_text, update_user_language
+from utils.api_connections import add_product_review, add_service_review, get_about_bot, search_by_text, update_user_language
 from aiogram import Router
 
 from keyboards.default.user_btns import send_phone_number_btn, regions_btn
@@ -134,7 +135,8 @@ async def user_back_handler(message: Message, state: FSMContext):
 
 @router.message(BtnLangCheck('about_text'))
 async def about_handler(message: Message, state: FSMContext):
-    pass
+    info = await get_about_bot()
+    await message.answer_video(info['video'], caption=info['description'])
 
 
 @router.message(BtnLangCheck('admin_text'))

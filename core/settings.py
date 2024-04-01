@@ -30,6 +30,7 @@ DEBUG = env.bool("DEBUG")
 
 CSRF_TRUSTED_ORIGINS = env.list("CSRF_TRUSTED_ORIGINS")
 ALLOWED_HOSTS = env.list("ALLOWED_HOSTS")
+DOMAIN = env.str("DOMAIN")
 
 # Application definition
 

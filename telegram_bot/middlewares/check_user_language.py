@@ -1,3 +1,4 @@
+import logging
 from typing import Union, Callable, Dict, Any, Awaitable
 
 from aiogram import BaseMiddleware

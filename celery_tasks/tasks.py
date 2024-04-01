@@ -3,6 +3,8 @@ from celery import shared_task
 import logging
 from .models import NotifyTasks, ServiceStuff, ProductDetail
 from .utils import send_message_to_user
+from subprocess import run
+
 
 logging.basicConfig(
     level=logging.INFO,
@@ -21,3 +23,9 @@ def check_push():
             data = ProductDetail.objects.get(id=user.receiver)
         send_message_to_user(user=user, lang=user.user.language, receiver=data, datatype=user.type)
     return "Task completed successfully"
+
+
+@shared_task
+def create_backup():
+    run(['python', 'manage.py', 'dumpdata', '>', 'backup.json'])
+    return "Backup created successfully"

@@ -4,7 +4,7 @@ from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from bot_api.serializers import TelegramUserSerializer, RegionsSerializer, ServiceSerializer, ServiceCategorySerializer, \
+from bot_api.serializers import AboutBotSerializer, TelegramUserSerializer, RegionsSerializer, ServiceSerializer, ServiceCategorySerializer, \
     ServiceStuffSerializer, StuffCommentsSerializer, ProductCategorySerializer, ProductDetailSerializer, \
     ProductCommentsSerializer
 from . import models
@@ -27,6 +27,7 @@ class TelegramUserCreateAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         user_id = request.data.get('user_id')
+        logger.info(user_id)
         tg_user = models.TgUser.objects.filter(user_id=user_id)
         if tg_user.exists():
             serializer = TelegramUserSerializer(instance=tg_user.first())
@@ -237,3 +238,11 @@ class SearchAPIView(APIView):
             serializer = sort_subcategory(serializer.data, 'product')
             return Response({"result": serializer, "to_state": "product"}, status=status.HTTP_200_OK)
 
+
+class AboutBotAPIView(APIView):
+    permission_classes = [permissions.AllowAny]
+
+    def get(self, request, *args, **kwargs):
+        about_bot = models.AboutBot.objects.first()
+        serializer = AboutBotSerializer(instance=about_bot)
+        return Response(serializer.data, status=status.HTTP_200_OK)
