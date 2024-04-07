@@ -1,9 +1,10 @@
 import os
+import django
+django.setup()
 
 from celery import Celery
 from datetime import timedelta
-from bot_api import models
-
+from bot_api.models import AboutBot
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'core.settings')
 
@@ -12,7 +13,8 @@ app.config_from_object('django.conf:settings', namespace='CELERY')
 
 app.autodiscover_tasks()
 
-minute = models.AboutBot.objects.first().comment_request_time
+minute = AboutBot.objects.first().comment_request_time
+# minute = 1
 
 app.conf.beat_schedule = {
     f'send_push-every-{minute}-minute': {

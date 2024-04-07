@@ -153,7 +153,7 @@ async def search_by_text(user_id: int, text: str):
 async def add_service_review(user_id: int, service_id: int, rating: int, comment: str):
     data = {'user_id': user_id, "service_id": service_id, "rating": rating, "comment": comment}
     async with ClientSession() as session:
-        async with session.post(f"{API_URL}/stuff_comments/", params=data) as response:
+        async with session.post(f"{API_URL}/stuff_comments/", data=data) as response:
             if response.status == 200:
                 return await response.json()
 
@@ -161,7 +161,7 @@ async def add_service_review(user_id: int, service_id: int, rating: int, comment
 async def add_product_review(user_id: int, product_id: int, rating: int, comment: str):
     data = {'user_id': user_id, "product_id": product_id, "rating": rating, "comment": comment}
     async with ClientSession() as session:
-        async with session.post(f"{API_URL}/product_comments/", params=data) as response:
+        async with session.post(f"{API_URL}/product_comments/", data=data) as response:
             if response.status == 200:
                 return await response.json()
             

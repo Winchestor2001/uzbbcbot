@@ -11,9 +11,9 @@ services:
 
   redis:
     image: redis:rc-alpine3.12
-    restart: on-failure
+    restart: always
     ports:
-      - "16380:6379"
+      - "16379:6379"
 
   web:
     build: .
@@ -38,7 +38,10 @@ services:
 
   celery:
     image: uzbbcbot:latest
+    restart: always
     build: .
+    env_file:
+      - .env
     command: celery -A core worker -l info
     volumes:
       - .:/uzbbcbot
@@ -48,16 +51,19 @@ services:
 
   celery-beat:
     image: uzbbcbot:latest
+    restart: always
     build: .
+    env_file:
+      - .env
     command: celery -A core beat -l info
     volumes:
       - .:/uzbbcbot
     depends_on:
-      - celery
+      - web
 
   bot:
     image: uzbbcbot:latest
-    restart: on-failure
+    restart: always
     env_file:
       - .env
     command: python3 telegram_bot/app.py

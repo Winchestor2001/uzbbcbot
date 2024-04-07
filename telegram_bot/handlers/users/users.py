@@ -249,8 +249,8 @@ async def user_add_rating_callback(c: CallbackQuery, state: FSMContext):
     await state.set_state(UserStates.add_comment)
 
 
-@router.callback_query(UserStates.add_comment, F.text)
-async def user_add_comment_callback(message: Message, state: FSMContext):
+@router.message(UserStates.add_comment, F.text)
+async def user_add_comment_state(message: Message, state: FSMContext):
     user_id = message.from_user.id
     data = await state.get_data()
     lang = data['lang']

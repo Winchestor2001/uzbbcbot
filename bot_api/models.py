@@ -1,5 +1,3 @@
-from django.contrib.contenttypes.fields import GenericForeignKey
-from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
 
@@ -127,8 +125,8 @@ class ProductRating(CustomBaseModel):
 
 
 class AboutBot(CustomBaseModel):
-    video = models.FileField(upload_to='video/')
-    description = models.TextField()
+    video = models.FileField(upload_to='video/', blank=True, null=True)
+    description = models.TextField(blank=True, null=True)
     comment_request_time = models.PositiveIntegerField(default=1)
 
     def __str__(self):

@@ -27,7 +27,6 @@ class TelegramUserCreateAPIView(APIView):
 
     def post(self, request, *args, **kwargs):
         user_id = request.data.get('user_id')
-        logger.info(user_id)
         tg_user = models.TgUser.objects.filter(user_id=user_id)
         if tg_user.exists():
             serializer = TelegramUserSerializer(instance=tg_user.first())
@@ -65,10 +64,11 @@ class UpdateUserInfoAPIView(APIView):
         city = request.data['city']
         user = models.TgUser.objects.get(user_id=int(user_id))
         user.phone_number = phone_number
+        user.city.clear()
         if city != 'no':
             city_obj = models.City.objects.filter(name=city)
             if city_obj.exists():
-                user.city.add(city)
+                user.city.add(city_obj.first().pk)
             else:
                 region = models.Region.objects.get(name=city)
                 cities = models.City.objects.filter(region=region)
@@ -155,8 +155,8 @@ class StuffCommentsAPIView(APIView):
         rating = request.data.get('rating')
         comment = request.data.get('comment')
         models.ServiceRating.objects.create(
-            user=models.TgUser.objects.get(user_id=user_id),
-            service=models.ServiceStuff.objects.get(id=service_id),
+            tg_user=models.TgUser.objects.get(user_id=user_id),
+            stuff=models.ServiceStuff.objects.get(id=service_id),
             rating=rating,
             comment=comment
         )
@@ -213,9 +213,9 @@ class ProductCommentsAPIView(APIView):
         product_id = request.data.get('product_id')
         rating = request.data.get('rating')
         comment = request.data.get('comment')
-        models.ServiceRating.objects.create(
-            user=models.TgUser.objects.get(user_id=user_id),
-            product_id=models.ProductRating.objects.get(id=product_id),
+        models.ProductRating.objects.create(
+            tg_user=models.TgUser.objects.get(user_id=user_id),
+            product_detail=models.ProductDetail.objects.get(id=product_id),
             rating=rating,
             comment=comment
         )
