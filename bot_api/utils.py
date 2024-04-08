@@ -1,4 +1,7 @@
+import logging
 import math
+
+logger = logging.getLogger('django')
 
 
 def calc_distance(lat1, lon1, lat2, lon2):
@@ -39,9 +42,8 @@ def count_ratings(ratings):
         voted_stars = 0
         for rating in ratings:
             voted_stars += rating.rating * 10
-
         return round(voted_stars / 10 / voted, 1)
-    return 0.0
+    return 0.0  
 
 
 def sort_subcategory(obj: list, action: str):
