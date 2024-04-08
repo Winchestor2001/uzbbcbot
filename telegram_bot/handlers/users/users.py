@@ -4,15 +4,15 @@ from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery, InputFile
 
-from keyboards.default.user_btns import search_category_btn, start_command_btn
+from keyboards.default.user_btns import choose_category_btn, search_category_btn, start_command_btn
 from keyboards.inline.user_btns import Rating, choose_language_btn, rating_btn
 from utils.bot_context import languages
 
 from states.AllStates import UserStates
-from utils.api_connections import add_product_review, add_service_review, get_about_bot, search_by_text, update_user_language
+from utils.api_connections import add_product_review, add_service_review, get_about_bot, get_product_categories, get_service_categories, search_by_text, update_user_language, update_user_regions
 from aiogram import Router
 
-from keyboards.default.user_btns import send_phone_number_btn, regions_btn
+from keyboards.default.user_btns import send_phone_number_btn
 from keyboards.inline.user_btns import Lang
 from utils.api_connections import get_regions, verify_user
 
@@ -70,31 +70,34 @@ async def user_phone_number_state(message: Message, state: FSMContext):
     else:
         phone_number = message.text
 
-    await state.update_data(phone_number=phone_number)
-    regions = await get_regions()
-    btn = await regions_btn(lang, regions)
-    await message.answer(languages[lang]['choose_region_handler'], reply_markup=btn)
-    await state.set_state(UserStates.region)
+    await verify_user(
+            user_id=message.from_user.id,
+            phone_number=phone_number,
+        )
+
+    await state.set_state(None)
+    await start_command(message, state)
 
 
 @router.message(UserStates.region, F.text)
 async def user_region_state(message: Message, state: FSMContext):
     user_region = message.text
     data = await state.get_data()
-    if languages[data['lang']]['reply_button']['only_uzbekistan'] == user_region:
-        await verify_user(
-            user_id=message.from_user.id,
-            phone_number=data['phone_number'],
-            city='no',
-        )
+    if languages[data['lang']]['reply_button']['back_text'] == user_region:
         await state.set_state(None)
         await start_command(message, state)
+    elif languages[data['lang']]['reply_button']['only_uzbekistan'] == user_region:
+        await update_user_regions(
+            user_id=message.from_user.id,
+            city='no',
+        )
+        await check_actions_inselect_regions(data, data['lang'], message, state)
     else:
         await state.update_data(region=user_region)
         cities = await get_region_cities((await get_regions()), user_region)
         user_region = languages[data['lang']]['reply_button']['only_cities'].format(user_region)
         cities.insert(0, user_region)
-        btn = await subs_btn(cities)
+        btn = await subs_btn(cities, data['lang'])
         await message.answer(languages[data['lang']]['choose_city_handler'], reply_markup=btn)
         await state.set_state(UserStates.city)
 
@@ -103,15 +106,20 @@ async def user_region_state(message: Message, state: FSMContext):
 async def user_city_state(message: Message, state: FSMContext):
     user_city = message.text
     data = await state.get_data()
-    if data['region'] in user_city:
+    lang = data['lang']
+    if languages[data['lang']]['reply_button']['back_text'] == user_city:
+        await state.set_state(None)
+        await start_command(message, state)
+    elif data['region'] in user_city:
         user_city = data['region']
-    await verify_user(
-        user_id=message.from_user.id,
-        phone_number=data['phone_number'],
-        city=user_city,
-    )
-    await state.set_state(None)
-    await start_command(message, state)
+        await update_user_regions(
+            user_id=message.from_user.id,
+            city=user_city,
+        )
+        await check_actions_inselect_regions(data, lang, message, state)
+    else:
+        context = languages[lang]['no_find_text']
+        await message.answer(context)
 
 
 @router.message(BtnLangCheck('profile_text'))
@@ -280,3 +288,23 @@ async def user_add_comment_state(message: Message, state: FSMContext):
 @router.callback_query(F.data == 'no_called')
 async def user_no_add_rating_callback(c: CallbackQuery, state: FSMContext):
     await c.message.delete()
+
+
+async def check_actions_inselect_regions(data, lang, message, state):
+    if data['action'] == 'service':
+        service_categories = await get_service_categories()
+        await state.update_data(service_categories=service_categories)
+        context = languages[lang]['choose_service_category']
+        btn = await choose_category_btn(lang, service_categories)
+        await message.answer(context, reply_markup=btn)
+        await state.set_state(UserStates.service_category)
+    elif data['action'] == 'product':
+        product_categories = await get_product_categories()
+        await state.update_data(product_categories=product_categories)
+        context = languages[lang]['choose_product_category']
+        btn = await choose_category_btn(lang, product_categories)
+        await message.answer(context, reply_markup=btn)
+        await state.set_state(UserStates.product_category)
+    else:
+        await state.set_state(None)
+        await start_command(message, state)

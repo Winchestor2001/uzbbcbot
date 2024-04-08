@@ -4,11 +4,11 @@ from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
 from filters.user_filters import BtnLangCheck
-from keyboards.default.user_btns import choose_category_btn, subs_btn, start_command_btn
+from keyboards.default.user_btns import regions_btn, subs_btn, start_command_btn
 from keyboards.inline.user_btns import service_pagination_btn, Pagination, Staff, call_btn, \
     StaffComment, stuff_comment_btn
 from states.AllStates import UserStates
-from utils.api_connections import search_services, get_service_categories, stuff_service, stuff_comments
+from utils.api_connections import get_regions, search_services, stuff_service, stuff_comments
 from utils.bot_context import languages
 from utils.usefull_functions import pagination_context_maker, get_sub_categories
 
@@ -20,12 +20,18 @@ async def service_handler(message: Message, state: FSMContext):
     data = await state.get_data()
     lang = data['lang']
 
-    service_categories = await get_service_categories()
-    await state.update_data(service_categories=service_categories)
-    context = languages[lang]['choose_service_category']
-    btn = await choose_category_btn(lang, service_categories)
-    await message.answer(context, reply_markup=btn)
-    await state.set_state(UserStates.service_category)
+    regions = await get_regions()
+    btn = await regions_btn(lang, regions)
+    await message.answer(languages[lang]['choose_region_handler'], reply_markup=btn)
+    await state.update_data(action='service')
+    await state.set_state(UserStates.region)
+
+    # service_categories = await get_service_categories()
+    # await state.update_data(service_categories=service_categories)
+    # context = languages[lang]['choose_service_category']
+    # btn = await choose_category_btn(lang, service_categories)
+    # await message.answer(context, reply_markup=btn)
+    # await state.set_state(UserStates.service_category)
 
 
 @router.message(UserStates.service_category, F.text)

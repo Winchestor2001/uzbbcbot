@@ -48,7 +48,8 @@ async def regions_btn(lang: str, regions: list):
         width=1
     )
     btn.add(
-        *[KeyboardButton(text=item['name']) for item in regions]
+        *[KeyboardButton(text=item['name']) for item in regions],
+        KeyboardButton(text=languages[lang]["reply_button"]["back_text"])
     )
     btn.adjust(2)
     return btn.as_markup(resize_keyboard=True)

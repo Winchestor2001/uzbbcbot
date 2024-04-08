@@ -1,15 +1,13 @@
 from aiogram import F, Router
-from aiogram.filters import CommandStart
 from aiogram.fsm.context import FSMContext
 from aiogram.types import Message, CallbackQuery
 
 from filters.user_filters import BtnLangCheck
-from keyboards.default.user_btns import choose_category_btn, subs_btn, start_command_btn
+from keyboards.default.user_btns import regions_btn, subs_btn, start_command_btn
 from keyboards.inline.user_btns import product_pagination_btn, Product, call_btn, ProductComment, \
     product_comment_btn
 from states.AllStates import UserStates
-from utils.api_connections import get_product_categories, search_products, get_product_info, \
-    product_comments
+from utils.api_connections import get_regions, search_products, get_product_info, product_comments
 from utils.bot_context import languages
 from utils.usefull_functions import get_sub_categories, pagination_context_maker
 
@@ -21,12 +19,11 @@ async def product_handler(message: Message, state: FSMContext):
     data = await state.get_data()
     lang = data['lang']
 
-    product_categories = await get_product_categories()
-    await state.update_data(product_categories=product_categories)
-    context = languages[lang]['choose_product_category']
-    btn = await choose_category_btn(lang, product_categories)
-    await message.answer(context, reply_markup=btn)
-    await state.set_state(UserStates.product_category)
+    regions = await get_regions()
+    btn = await regions_btn(lang, regions)
+    await message.answer(languages[lang]['choose_region_handler'], reply_markup=btn)
+    await state.update_data(action='product')
+    await state.set_state(UserStates.region)
 
 
 @router.message(UserStates.product_category, F.text)

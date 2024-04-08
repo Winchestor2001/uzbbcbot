@@ -43,8 +43,8 @@ async def get_regions():
                 return []
 
 
-async def verify_user(user_id: int, phone_number: str, city: str):
-    data = {"user_id": user_id, "phone_number": phone_number, "city": city}
+async def verify_user(user_id: int, phone_number: str):
+    data = {"user_id": user_id, "phone_number": phone_number}
     async with ClientSession() as session:
         async with session.patch(f"{API_URL}/verify_user/", data=data) as response:
             if response.status == 200:
@@ -52,6 +52,16 @@ async def verify_user(user_id: int, phone_number: str, city: str):
             else:
                 return False
 
+
+async def update_user_regions(user_id: int, city: str):
+    data = {"user_id": user_id, "city": city}
+    async with ClientSession() as session:
+        async with session.patch(f"{API_URL}/verify_user/", data=data) as response:
+            if response.status == 200:
+                return await response.json()
+            else:
+                return False
+            
 
 async def get_user_info(user_id: int):
     async with ClientSession() as session:

@@ -60,10 +60,10 @@ class UpdateUserInfoAPIView(APIView):
 
     def patch(self, request):
         user_id = request.data['user_id']
-        phone_number = request.data['phone_number']
+        phone_number = request.data.get('phone_number', False)
         city = request.data['city']
         user = models.TgUser.objects.get(user_id=int(user_id))
-        user.phone_number = phone_number
+        user.phone_number = phone_number if phone_number else user.phone_number
         user.city.clear()
         if city != 'no':
             city_obj = models.City.objects.filter(name=city)
