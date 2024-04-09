@@ -105,6 +105,7 @@ async def staff_callback(c: CallbackQuery, state: FSMContext):
     staff_info = await stuff_service(stuff_id)
     btn = await call_btn(lang, staff_info['phone_number'], stuff_id, 'service', user_id)
     price = staff_info['price'] if staff_info['price'] > 0 else languages[lang]['no_price_text']
+    location_url = staff_info['location_url'] if len(staff_info['location_url']) > 1 else languages[lang]['no_location_url_text']
     context = languages[lang]['service_info_text'].format(
         staff_info['fullname'], staff_info['service'], staff_info['rating'], price, staff_info['city'],
         staff_info['experience'], staff_info['location_url'], staff_info['description']
