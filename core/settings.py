@@ -40,7 +40,6 @@ INSTALLED_APPS = [
     # 'adminlte3_theme',
     'jazzmin',
     'django.contrib.admin',
-    'modeltranslation',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -357,3 +356,9 @@ LOGGING = {
         },
     },
 }
+
+DB_LANGUAGES = (
+    ('uz', 'uz'),
+    ('ru', 'ru'),
+    ('en', 'en'),
+)

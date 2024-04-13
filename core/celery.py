@@ -15,7 +15,7 @@ app.autodiscover_tasks()
 django.setup()
 from bot_api.models import AboutBot
 minute = AboutBot.objects.first().comment_request_time
-#minute = 1
+# minute = 1
 
 app.conf.beat_schedule = {
     f'send_push-every-{minute}-minute': {

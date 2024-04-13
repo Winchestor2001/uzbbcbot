@@ -33,8 +33,8 @@ class TgUserAdmin(admin.ModelAdmin):
 
 @admin.register(models.Region)
 class RegionAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name', 'is_visible']
-    list_display_links = ['name']
+    list_display = ['id', 'uz_name', 'is_visible']
+    list_display_links = ['uz_name']
     inlines = [CityInline]
     ordering = ['-created_at']
     actions = ['set_visible', 'set_unvisible']
@@ -51,8 +51,8 @@ class RegionAdmin(admin.ModelAdmin):
 
 @admin.register(models.ServiceCategory)
 class ServiceCategoryAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name']
-    list_display_links = ['name']
+    list_display = ['id', 'uz_name']
+    list_display_links = ['uz_name']
     inlines = [ServiceInline]
     ordering = ['-created_at']
 
@@ -73,8 +73,8 @@ class ServiceStuffAdmin(admin.ModelAdmin):
 
 @admin.register(models.ProductCategory)
 class ProductCategoryAdmin(admin.ModelAdmin):
-    list_display = ['id', 'name']
-    list_display_links = ['name']
+    list_display = ['id', 'uz_name']
+    list_display_links = ['uz_name']
     inlines = [ProductInline]
     ordering = ['-created_at']
 

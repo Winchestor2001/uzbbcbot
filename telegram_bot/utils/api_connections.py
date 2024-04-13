@@ -34,9 +34,10 @@ async def update_user_language(user_id: int, language: str):
                 return None
 
 
-async def get_regions():
+async def get_regions(lang: str):
     async with ClientSession() as session:
-        async with session.get(f"{API_URL}/regions/") as response:
+        params = {"lang": lang}
+        async with session.get(f"{API_URL}/regions/", params=params) as response:
             if response.status == 200:
                 return await response.json()
             else:
@@ -72,17 +73,18 @@ async def get_user_info(user_id: int):
                 return None
 
 
-async def get_service_categories():
+async def get_service_categories(lang: str):
+    params = {"lang": lang}
     async with ClientSession() as session:
-        async with session.get(f"{API_URL}/get_services/") as response:
+        async with session.get(f"{API_URL}/get_services/", params=params) as response:
             if response.status == 200:
                 return await response.json()
             else:
                 return []
 
 
-async def search_services(user_id: int, service: str, offset: int = 1):
-    params = {'user_id': user_id, 'offset': offset, 'service': service}
+async def search_services(user_id: int, service: str, lang: str, offset: int = 1):
+    params = {'user_id': user_id, 'offset': offset, 'service': service, "lang": lang}
     async with ClientSession() as session:
         async with session.get(f"{API_URL}/search_services/", params=params) as response:
             if response.status == 200:
@@ -91,8 +93,8 @@ async def search_services(user_id: int, service: str, offset: int = 1):
                 return []
 
 
-async def stuff_service(stuff_id: int):
-    params = {'stuff_id': stuff_id}
+async def stuff_service(stuff_id: int, lang: str):
+    params = {'stuff_id': stuff_id, "lang": lang}
     async with ClientSession() as session:
         async with session.get(f"{API_URL}/stuff_service/", params=params) as response:
             if response.status == 200:
@@ -111,9 +113,10 @@ async def stuff_comments(stuff_id: int):
                 return []
 
 
-async def get_product_categories():
+async def get_product_categories(lang: str):
+    params = {"lang": lang}
     async with ClientSession() as session:
-        async with session.get(f"{API_URL}/get_products/") as response:
+        async with session.get(f"{API_URL}/get_products/", params=params) as response:
             if response.status == 200:
                 return await response.json()
             else:

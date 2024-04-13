@@ -9,7 +9,7 @@ from .utils import count_ratings
 class CitySerializer(ModelSerializer):
     class Meta:
         model = models.City
-        fields = ['name']
+        fields = ['uz_name', 'ru_name', 'en_name']
 
 
 class RegionsSerializer(ModelSerializer):
@@ -18,13 +18,18 @@ class RegionsSerializer(ModelSerializer):
         fields = '__all__'
 
     @staticmethod
-    def get_cities(obj):
+    def get_cities(obj, lang):
         cities = CitySerializer(instance=models.City.objects.filter(region=obj), many=True)
-        return [item['name'] for item in cities.data]
+        return [item[f'{lang}_name'] for item in cities.data]
 
     def to_representation(self, instance):
         redata = super(RegionsSerializer, self).to_representation(instance)
-        redata['cities'] = self.get_cities(instance)
+        lang = self.context.get('lang')
+        redata.pop('uz_name')
+        redata.pop('ru_name')
+        redata.pop('en_name')
+        redata['name'] = eval(f'instance.{lang}_name')
+        redata['cities'] = self.get_cities(instance, lang)
         return redata
 
 
@@ -38,9 +43,13 @@ class TelegramUserSerializer(ModelSerializer):
         if instance.city.all():
             cities = instance.city.all()
             if cities.count() > 1:
-                data['city'] = f"{cities[0].region.name}"
+                data['uz_city'] = f"{cities[0].region.uz_name}"
+                data['ru_city'] = f"{cities[0].region.ru_name}"
+                data['en_city'] = f"{cities[0].region.en_name}"
             else:
-                data['city'] = f"{cities[0].name}"
+                data['uz_city'] = f"{cities[0].uz_name}"
+                data['ru_city'] = f"{cities[0].ru_name}"
+                data['en_city'] = f"{cities[0].en_name}"
         return data
 
 
@@ -62,13 +71,18 @@ class ServiceCategorySerializer(ModelSerializer):
         fields = '__all__'
 
     @staticmethod
-    def get_services(obj):
+    def get_services(obj, lang):
         services = ServiceSerializer(instance=models.Service.objects.filter(category=obj), many=True)
-        return [item['name'] for item in services.data]
+        return [item[f'{lang}_name'] for item in services.data]
 
     def to_representation(self, instance):
         redata = super(ServiceCategorySerializer, self).to_representation(instance)
-        redata['services'] = self.get_services(instance)
+        lang = self.context.get('lang')
+        redata.pop('uz_name')
+        redata.pop('ru_name')
+        redata.pop('en_name')
+        redata['name'] = eval(f'instance.{lang}_name')
+        redata['services'] = self.get_services(instance, lang)
         return redata
 
 
@@ -79,8 +93,9 @@ class ServiceStuffSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         data = super(ServiceStuffSerializer, self).to_representation(instance)
-        data['service'] = instance.service.name
-        data['city'] = instance.city.name
+        lang = self.context.get('lang')
+        data['service'] = eval(f"instance.service.{lang}_name")
+        data['city'] = eval(f"instance.city.{lang}_name")
         return data
 
 
@@ -103,7 +118,7 @@ class ProductCategorySerializer(ModelSerializer):
     @staticmethod
     def get_products(obj):
         services = ProductSerializer(instance=models.Product.objects.filter(category=obj), many=True)
-        return [item['name'] for item in services.data]
+        return [item.endswith('name') for item in services.data]
 
     def to_representation(self, instance):
         redata = super(ProductCategorySerializer, self).to_representation(instance)
@@ -118,8 +133,9 @@ class ProductDetailSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         data = super(ProductDetailSerializer, self).to_representation(instance)
-        data['product'] = instance.product.name
-        data['city'] = instance.city.name
+        lang = self.context.get('lang')
+        data['product'] = eval(f"instance.product.{lang}_name")
+        data['city'] = eval(f"instance.city.{lang}_name")
         return data
 
 
@@ -137,9 +153,11 @@ class ProductCommentsSerializer(ModelSerializer):
 class AboutBotSerializer(ModelSerializer):
     class Meta:
         model = models.AboutBot
-        fields = ['video', 'description']
+        fields = ['uz_video', 'ru_video', 'en_video', 'uz_description', 'ru_description', 'en_description']
     
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata['video'] = DOMAIN + instance.video.url
+        redata['uz_video'] = DOMAIN + instance.video.url
+        redata['ru_video'] = DOMAIN + instance.video.url
+        redata['en_video'] = DOMAIN + instance.video.url
         return redata

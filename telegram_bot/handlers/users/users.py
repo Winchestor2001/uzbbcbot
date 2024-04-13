@@ -94,7 +94,7 @@ async def user_region_state(message: Message, state: FSMContext):
         await check_actions_inselect_regions(data, data['lang'], message, state)
     else:
         await state.update_data(region=user_region)
-        cities = await get_region_cities((await get_regions()), user_region)
+        cities = await get_region_cities((await get_regions(data['lang'])), user_region)
         user_region = languages[data['lang']]['reply_button']['only_cities'].format(user_region)
         cities.insert(0, user_region)
         btn = await subs_btn(cities, data['lang'])
@@ -292,14 +292,14 @@ async def user_no_add_rating_callback(c: CallbackQuery, state: FSMContext):
 
 async def check_actions_inselect_regions(data, lang, message, state):
     if data['action'] == 'service':
-        service_categories = await get_service_categories()
+        service_categories = await get_service_categories(lang)
         await state.update_data(service_categories=service_categories)
         context = languages[lang]['choose_service_category']
         btn = await choose_category_btn(lang, service_categories)
         await message.answer(context, reply_markup=btn)
         await state.set_state(UserStates.service_category)
     elif data['action'] == 'product':
-        product_categories = await get_product_categories()
+        product_categories = await get_product_categories(lang)
         await state.update_data(product_categories=product_categories)
         context = languages[lang]['choose_product_category']
         btn = await choose_category_btn(lang, product_categories)

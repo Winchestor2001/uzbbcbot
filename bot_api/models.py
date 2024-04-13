@@ -1,5 +1,7 @@
 from django.db import models
 
+from core.settings import DB_LANGUAGES
+
 
 class CustomBaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
@@ -10,19 +12,23 @@ class CustomBaseModel(models.Model):
 
 
 class Region(CustomBaseModel):
-    name = models.CharField(max_length=100)
+    uz_name = models.CharField(max_length=100)
+    ru_name = models.CharField(max_length=100, blank=True, null=True)
+    en_name = models.CharField(max_length=100, blank=True, null=True)
     is_visible = models.BooleanField(default=True)
 
     def __str__(self):
-        return self.name
+        return self.uz_name
 
 
 class City(CustomBaseModel):
-    name = models.CharField(max_length=100)
+    uz_name = models.CharField(max_length=100)
+    ru_name = models.CharField(max_length=100, blank=True, null=True)
+    en_name = models.CharField(max_length=100, blank=True, null=True)
     region = models.ForeignKey(Region, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return self.uz_name
 
 
 class TgUser(CustomBaseModel):
@@ -45,33 +51,41 @@ class TgUser(CustomBaseModel):
 
 
 class ProductCategory(CustomBaseModel):
-    name = models.CharField(max_length=200)
+    uz_name = models.CharField(max_length=200)
+    ru_name = models.CharField(max_length=200, blank=True, null=True)
+    en_name = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return self.uz_name
 
 
 class Product(CustomBaseModel):
-    name = models.CharField(max_length=200)
+    uz_name = models.CharField(max_length=200)
+    ru_name = models.CharField(max_length=200, blank=True, null=True)
+    en_name = models.CharField(max_length=200, blank=True, null=True)
     category = models.ForeignKey(ProductCategory, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return self.uz_name
 
 
 class ServiceCategory(CustomBaseModel):
-    name = models.CharField(max_length=200)
+    uz_name = models.CharField(max_length=200)
+    ru_name = models.CharField(max_length=200, blank=True, null=True)
+    en_name = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
-        return self.name
+        return self.uz_name
 
 
 class Service(CustomBaseModel):
-    name = models.CharField(max_length=200)
+    uz_name = models.CharField(max_length=200)
+    ru_name = models.CharField(max_length=200, blank=True, null=True)
+    en_name = models.CharField(max_length=200, blank=True, null=True)
     category = models.ForeignKey(ServiceCategory, on_delete=models.CASCADE)
 
     def __str__(self):
-        return self.name
+        return self.uz_name
 
 
 class ServiceStuff(CustomBaseModel):
@@ -84,6 +98,7 @@ class ServiceStuff(CustomBaseModel):
     rating = models.FloatField(default=0.0)
     description = models.TextField(blank=True, null=True)
     location_url = models.URLField(blank=True, null=True)
+    lang = models.CharField(choices=DB_LANGUAGES, max_length=50)
 
     def __str__(self):
         return self.fullname
@@ -99,6 +114,7 @@ class ProductDetail(CustomBaseModel):
     rating = models.FloatField(default=0.0)
     description = models.TextField(blank=True, null=True)
     location_url = models.URLField(blank=True, null=True)
+    lang = models.CharField(choices=DB_LANGUAGES, max_length=50)
 
     def __str__(self):
         return self.fullname
@@ -125,8 +141,12 @@ class ProductRating(CustomBaseModel):
 
 
 class AboutBot(CustomBaseModel):
-    video = models.FileField(upload_to='video/', blank=True, null=True)
-    description = models.TextField(blank=True, null=True)
+    uz_video = models.FileField(upload_to='uz_video/', blank=True, null=True)
+    ru_video = models.FileField(upload_to='ru_video/', blank=True, null=True)
+    en_video = models.FileField(upload_to='en_video/', blank=True, null=True)
+    uz_description = models.TextField(blank=True, null=True)
+    ru_description = models.TextField(blank=True, null=True)
+    en_description = models.TextField(blank=True, null=True)
     comment_request_time = models.PositiveIntegerField(default=1)
 
     def __str__(self):

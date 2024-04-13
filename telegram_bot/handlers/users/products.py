@@ -19,7 +19,7 @@ async def product_handler(message: Message, state: FSMContext):
     data = await state.get_data()
     lang = data['lang']
 
-    regions = await get_regions()
+    regions = await get_regions(lang)
     btn = await regions_btn(lang, regions)
     await message.answer(languages[lang]['choose_region_handler'], reply_markup=btn)
     await state.update_data(action='product')
