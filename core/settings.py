@@ -36,7 +36,8 @@ DOMAIN = env.str("DOMAIN")
 # Application definition
 
 INSTALLED_APPS = [
-    'jazzmin',
+    # 'jazzmin',
+    'unfold',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -47,6 +48,13 @@ INSTALLED_APPS = [
     'celery_tasks',
     'rest_framework',
 ]
+
+
+UNFOLD = {
+    "SITE_TITLE": "App",
+    "SITE_HEADER": "App",
+    "DASHBOARD_CALLBACK": "bot_api.views.dashboard_callback",
+}
 
 
 LANGUAGES = [

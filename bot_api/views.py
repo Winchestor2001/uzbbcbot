@@ -259,3 +259,11 @@ class AboutBotAPIView(APIView):
         about_bot = models.AboutBot.objects.first()
         serializer = AboutBotSerializer(instance=about_bot)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+def dashboard_callback(request, context):
+    context.update({
+        "custom_variable": "value",
+    })
+
+    return context

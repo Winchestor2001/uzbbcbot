@@ -1,4 +1,6 @@
 from django.contrib import admin
+from django.contrib.auth.models import User, Group
+from unfold.admin import ModelAdmin
 from django.http import HttpRequest
 from . import models
 from django.db.models import QuerySet
@@ -6,6 +8,13 @@ from django.db.models import QuerySet
 
 admin.site.site_header = "Bot Admin Panel"
 admin.site.site_title = "Bot Admin Panel"
+
+
+admin.site.unregister(User)
+admin.site.unregister(Group)
+admin.site.register(User, ModelAdmin)
+admin.site.register(Group, ModelAdmin)
+
 
 
 class CityInline(admin.TabularInline):
@@ -24,7 +33,7 @@ class ProductInline(admin.TabularInline):
 
 
 @admin.register(models.TgUser)
-class TgUserAdmin(admin.ModelAdmin):
+class TgUserAdmin(ModelAdmin):
     list_display = ['user_id', 'username', 'is_active', 'language']
     list_display_links = ['user_id', 'username']
     ordering = ['-created_at']
@@ -32,7 +41,7 @@ class TgUserAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.Region)
-class RegionAdmin(admin.ModelAdmin):
+class RegionAdmin(ModelAdmin):
     list_display = ['id', 'uz_name', 'is_visible']
     list_display_links = ['uz_name']
     inlines = [CityInline]
@@ -50,7 +59,7 @@ class RegionAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.ServiceCategory)
-class ServiceCategoryAdmin(admin.ModelAdmin):
+class ServiceCategoryAdmin(ModelAdmin):
     list_display = ['id', 'uz_name']
     list_display_links = ['uz_name']
     inlines = [ServiceInline]
@@ -58,7 +67,7 @@ class ServiceCategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.ServiceStuff)
-class ServiceStuffAdmin(admin.ModelAdmin):
+class ServiceStuffAdmin(ModelAdmin):
     list_display = ['id', 'fullname', 'city', 'service', 'price', 'rating']
     list_display_links = ['fullname', 'city']
     readonly_fields = ['rating']
@@ -72,7 +81,7 @@ class ServiceStuffAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.ProductCategory)
-class ProductCategoryAdmin(admin.ModelAdmin):
+class ProductCategoryAdmin(ModelAdmin):
     list_display = ['id', 'uz_name']
     list_display_links = ['uz_name']
     inlines = [ProductInline]
@@ -80,7 +89,7 @@ class ProductCategoryAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.ProductDetail)
-class ProductDetailAdmin(admin.ModelAdmin):
+class ProductDetailAdmin(ModelAdmin):
     list_display = ['id', 'fullname', 'product']
     list_display_links = ['fullname', 'product']
     readonly_fields = ['rating']
@@ -89,21 +98,21 @@ class ProductDetailAdmin(admin.ModelAdmin):
 
 
 @admin.register(models.ServiceRating)
-class ServiceRatingAdmin(admin.ModelAdmin):
+class ServiceRatingAdmin(ModelAdmin):
     list_display = ['id', 'tg_user', 'stuff', 'rating', 'comment']
     list_display_links = ['tg_user']
     ordering = ['-created_at']
 
 
 @admin.register(models.ProductRating)
-class ProductRatingAdmin(admin.ModelAdmin):
+class ProductRatingAdmin(ModelAdmin):
     list_display = ['id', 'tg_user', 'product_detail', 'rating', 'comment']
     list_display_links = ['tg_user']
     ordering = ['-created_at']
 
 
 @admin.register(models.AboutBot)
-class AboutBotAdmin(admin.ModelAdmin):
+class AboutBotAdmin(ModelAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
