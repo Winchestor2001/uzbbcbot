@@ -1,4 +1,5 @@
 import logging
+from django.shortcuts import redirect
 from django.views.generic import TemplateView
 from rest_framework import generics, status, permissions
 from rest_framework.response import Response
@@ -259,6 +260,22 @@ class AboutBotAPIView(APIView):
         about_bot = models.AboutBot.objects.first()
         serializer = AboutBotSerializer(instance=about_bot)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+def get_service_excel(request):
+    if request.method == 'POST':
+        lang = request.POST.get('lang')
+        file = request.FILES
+        print(lang)
+        print(file)
+    return redirect('/admin/')
+
+
+def get_product_excel(request):
+    if request.method == 'POST':
+        lang = request.POST.get('lang')
+        file = request.FILES
+    return redirect('/admin/')
 
 
 def dashboard_callback(request, context):

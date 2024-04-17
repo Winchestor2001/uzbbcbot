@@ -20,5 +20,8 @@ urlpatterns = [
     path('about_bot/', views.AboutBotAPIView.as_view()),
 
     path('call/', views.CallAPIView.as_view()),
+    
+    path('get_service_excel/', views.get_service_excel, name="get_service_excel"),
+    path('get_product_excel/', views.get_product_excel, name="get_product_excel"),
 ]
 

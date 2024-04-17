@@ -38,7 +38,8 @@
         {% include "unfold/helpers/app_list_default.html" %}
     </div>
 
-
+    {% include "unfold/helpers/history.html" %}
+    
     <div>
         <div id="content-related" class="lg:w-96 mb-5">
             <div id="recent-actions-module" class="module bg-gray-50 rounded-md p-3 dark:bg-gray-800">
@@ -46,7 +47,7 @@
                     Add Exec Article
                 </h2>
 
-                <form action="" method="post">
+                <form action="{% url 'get_service_excel' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <ul class="actionlist">
 
@@ -75,7 +76,7 @@
                     Add Exec Product
                 </h2>
 
-                <form action="" method="post">
+                <form action="{% url 'get_product_excel' %}" method="post" enctype="multipart/form-data">
                     {% csrf_token %}
                     <ul class="actionlist">
 
@@ -98,7 +99,6 @@
             </div>
         </div>
 
-        {% include "unfold/helpers/history.html" %}
     </div>
 </div>
 
