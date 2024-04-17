@@ -335,6 +335,9 @@ CELERY_RESULT_SERIALIZER = env.str("CELERY_RESULT_SERIALIZER")
 CORS_ALLOW_ALL_ORIGINS = True
 
 
+if not os.path.exists(env.str('WEB_LOG_PATH')):
+    os.makedirs(env.str('WEB_LOG_PATH'), exist_ok=True)
+
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -349,7 +352,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'formatter': 'verbose',
-            'filename': os.getenv('WEB_LOG_PATH'),
+            'filename': env.str('WEB_LOG_PATH'),
         },
         'console': {
             'level': 'DEBUG',
