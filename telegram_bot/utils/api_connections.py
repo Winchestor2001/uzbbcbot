@@ -1,5 +1,5 @@
 from aiohttp import ClientSession
-from telegram_bot.data.config import API_URL
+from data.config import API_URL
 import logging
 
 logger = logging.getLogger(__name__)
