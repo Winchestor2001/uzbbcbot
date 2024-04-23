@@ -18,6 +18,7 @@ urlpatterns = [
     path('product_comments/', views.ProductCommentsAPIView.as_view()),
     path('search/', views.SearchAPIView.as_view()),
     path('about_bot/', views.AboutBotAPIView.as_view()),
+    path('get_cities/', views.GetCities.as_view(), name="cities-api"),
 
     path('call/', views.CallAPIView.as_view()),
     

@@ -9,7 +9,7 @@ from .utils import count_ratings
 class CitySerializer(ModelSerializer):
     class Meta:
         model = models.City
-        fields = ['uz_name', 'ru_name', 'en_name']
+        fields = ['id', 'uz_name', 'ru_name', 'en_name']
 
 
 class RegionsSerializer(ModelSerializer):

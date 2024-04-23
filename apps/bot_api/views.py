@@ -5,7 +5,7 @@ from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from bot_api.serializers import AboutBotSerializer, TelegramUserSerializer, RegionsSerializer, ServiceSerializer, ServiceCategorySerializer, \
+from bot_api.serializers import AboutBotSerializer, CitySerializer, TelegramUserSerializer, RegionsSerializer, ServiceSerializer, ServiceCategorySerializer, \
     ServiceStuffSerializer, StuffCommentsSerializer, ProductCategorySerializer, ProductDetailSerializer, \
     ProductCommentsSerializer
 from . import models
@@ -260,6 +260,17 @@ class AboutBotAPIView(APIView):
         about_bot = models.AboutBot.objects.first()
         serializer = AboutBotSerializer(instance=about_bot)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+
+class GetCities(generics.ListAPIView):
+    queryset = models.City
+    serializer_class = CitySerializer
+
+    def get(self, request, *args, **kwargs):
+        region_id = request.GET.get("region_id")
+        query = models.City.objects.filter(region__id=region_id)
+        serializer = self.get_serializer(instance=query, many=True)
+        return Response({"cities": serializer.data}, status=200)
 
 
 def get_service_excel(request):
