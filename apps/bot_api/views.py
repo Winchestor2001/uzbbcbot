@@ -9,7 +9,7 @@ from bot_api.serializers import AboutBotSerializer, CitySerializer, TelegramUser
     ServiceStuffSerializer, StuffCommentsSerializer, ProductCategorySerializer, ProductDetailSerializer, \
     ProductCommentsSerializer
 from . import models
-from .utils import sort_subcategory
+from .utils import excel_to_bytesio, extract_excel, sort_subcategory
 from django.core.paginator import Paginator
 from celery_tasks.models import NotifyTasks
 
@@ -276,16 +276,21 @@ class GetCities(generics.ListAPIView):
 def get_service_excel(request):
     if request.method == 'POST':
         lang = request.POST.get('lang')
-        file = request.FILES
-        print(lang)
-        print(file)
+        file = request.FILES.get("excel")
+        region = request.POST.get("region")
+        city = request.POST.get("city")
+        data = extract_excel(file)
+        
     return redirect('/admin/')
 
 
 def get_product_excel(request):
     if request.method == 'POST':
         lang = request.POST.get('lang')
-        file = request.FILES
+        file = request.FILES["excel"]
+        region = request.POST.get("region")
+        city = request.POST.get("city")
+        data = extract_excel(file)
     return redirect('/admin/')
 
 

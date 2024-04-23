@@ -70,7 +70,7 @@
                         </li>
                         <li
                             class="border border-gray-400/10 bg-white mb-3 p-3 rounded-md shadow-sm last:mb-0 dark:bg-gray-900 select-wrapper">
-                            <select name="lang"
+                            <select name="region"
                                 class="bg-transparent border p-2 w-full bg-blue-50 rounded-md py-2 focus:outline-[#2196f3]" id="select_1" onchange="getValues(this, 'cities_select')">
                                 {% for item in regions %}
                                 <option value="{{ item.id }}" id="region">{{ item.uz_name }}</option>
@@ -79,7 +79,7 @@
                         </li>
                         <li
                             class="border border-gray-400/10 bg-white mb-3 p-3 rounded-md shadow-sm last:mb-0 dark:bg-gray-900 select-wrapper">
-                            <select name="lang"
+                            <select name="city"
                                 class="bg-transparent border p-2 w-full bg-blue-50 rounded-md py-2 focus:outline-[#2196f3]"
                                 id="cities_select">
 
@@ -121,7 +121,7 @@
                         </li>
                         <li
                             class="border border-gray-400/10 bg-white mb-3 p-3 rounded-md shadow-sm last:mb-0 dark:bg-gray-900 select-wrapper">
-                            <select name="lang"
+                            <select name="region"
                                 class="bg-transparent border p-2 w-full bg-blue-50 rounded-md py-2 focus:outline-[#2196f3]" id="select_2"
                                 onchange="getValues(this, 'cities_select2')">
                                 {% for item in regions %}
@@ -131,7 +131,7 @@
                         </li>
                         <li
                             class="border border-gray-400/10 bg-white mb-3 p-3 rounded-md shadow-sm last:mb-0 dark:bg-gray-900 select-wrapper">
-                            <select name="lang"
+                            <select name="city"
                                 class="bg-transparent border p-2 w-full bg-blue-50 rounded-md py-2 focus:outline-[#2196f3]"
                                 id="cities_select2">
 

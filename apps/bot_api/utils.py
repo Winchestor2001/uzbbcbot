@@ -1,5 +1,7 @@
 import logging
 import math
+import pandas as pd
+from io import BytesIO
 
 logger = logging.getLogger('django')
 
@@ -53,5 +55,23 @@ def sort_subcategory(obj: list, action: str):
         result.append(item[action])
     
     return list(set(result))
+
+
+def extract_excel(file):
+    excel = excel_to_bytesio(file).getvalue()
+    excel_bytes_io = BytesIO(excel)
+    df = pd.read_excel(excel_bytes_io)
+    print(df)
+
+
+def excel_to_bytesio(excel_file):
+    df = pd.read_excel(excel_file)
+    
+    bytes_io = BytesIO()
+    df.to_excel(bytes_io, index=False)
+    bytes_io.seek(0)
+    
+    return bytes_io
+
 
 
