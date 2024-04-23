@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User, Group
-from unfold.admin import ModelAdmin
+from unfold.admin import ModelAdmin, TabularInline
 from django.http import HttpRequest
 from . import models
 from django.db.models import QuerySet
@@ -17,17 +17,17 @@ admin.site.register(Group, ModelAdmin)
 
 
 
-class CityInline(admin.TabularInline):
+class CityInline(TabularInline):
     model = models.City
     extra = 1
 
 
-class ServiceInline(admin.TabularInline):
+class ServiceInline(TabularInline):
     model = models.Service
     extra = 1
 
 
-class ProductInline(admin.TabularInline):
+class ProductInline(TabularInline):
     model = models.Product
     extra = 1
 
