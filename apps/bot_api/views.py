@@ -279,8 +279,11 @@ def get_product_excel(request):
 
 
 def dashboard_callback(request, context):
+    regions = models.Region.objects.filter(is_visible=True)
+    cities = models.City.objects.all()
     context.update({
-        "custom_variable": "value",
+        "regions": regions,
+        "cities": cities,
     })
 
     return context
