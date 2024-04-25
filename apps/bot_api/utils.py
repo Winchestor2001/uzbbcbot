@@ -2,6 +2,7 @@ import logging
 import math
 import pandas as pd
 from io import BytesIO
+from .models import ServiceStuff, ProductDetail, Service, Product, City
 
 logger = logging.getLogger('django')
 
@@ -57,11 +58,11 @@ def sort_subcategory(obj: list, action: str):
     return list(set(result))
 
 
-def extract_excel(file):
+def extract_excel(file, city, lang):
     excel = excel_to_bytesio(file).getvalue()
     excel_bytes_io = BytesIO(excel)
     df = pd.read_excel(excel_bytes_io)
-    print(df)
+    return sorting_to_dict(df.columns[1:], df, city, lang)
 
 
 def excel_to_bytesio(excel_file):
@@ -74,4 +75,27 @@ def excel_to_bytesio(excel_file):
     return bytes_io
 
 
+def sorting_to_dict(columns: list, obj, city: str, lang: str):
+    data = []
+    for i in range(len(obj)):
+        dict_data = {}
+        for item in columns:
+            if str(obj[item][i]) not in ["NaN", "nan"]:
+                dict_data.update(
+                    {
+                        item: obj[item][i] if item != 'service' else Service.objects.get(uz_name=obj[item][i]),
+                        "city": City.objects.get(id=city),
+                        "lang": lang,
+                    }
+                )
+        if dict_data:
+            data.append(dict_data)
+    return data
+
+
+def service_data_save_to_db(data: list):
+    for item in data:
+        ServiceStuff.objects.create(
+            **item
+        )
 

@@ -9,7 +9,7 @@ from bot_api.serializers import AboutBotSerializer, CitySerializer, TelegramUser
     ServiceStuffSerializer, StuffCommentsSerializer, ProductCategorySerializer, ProductDetailSerializer, \
     ProductCommentsSerializer
 from . import models
-from .utils import excel_to_bytesio, extract_excel, sort_subcategory
+from .utils import excel_to_bytesio, extract_excel, service_data_save_to_db, sort_subcategory
 from django.core.paginator import Paginator
 from celery_tasks.models import NotifyTasks
 
@@ -279,7 +279,8 @@ def get_service_excel(request):
         file = request.FILES.get("excel")
         region = request.POST.get("region")
         city = request.POST.get("city")
-        data = extract_excel(file)
+        data = extract_excel(file, city, lang)
+        service_data_save_to_db(data)
         
     return redirect('/admin/')
 
