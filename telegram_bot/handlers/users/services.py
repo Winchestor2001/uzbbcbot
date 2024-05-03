@@ -22,7 +22,6 @@ async def service_handler(message: Message, state: FSMContext):
     lang = data['lang']
 
     regions = await get_regions(lang)
-    logging.info(regions)
     btn = await regions_btn(lang, regions)
     await message.answer(languages[lang]['choose_region_handler'], reply_markup=btn)
     await state.update_data(action='service')
@@ -108,7 +107,7 @@ async def staff_callback(c: CallbackQuery, state: FSMContext):
     price = staff_info['price'] if staff_info['price'] > 0 else languages[lang]['no_price_text']
     location_url = staff_info['location_url'] if staff_info['location_url'] else languages[lang]['no_location_url_text']
     context = languages[lang]['service_info_text'].format(
-        staff_info['fullname'], staff_info['service'], staff_info['rating'], price, staff_info['city'],
+        staff_info['fullname'], staff_info['service'], staff_info['rating'], staff_info['comments'], price, staff_info['city'],
         staff_info['experience'], location_url, staff_info['description']
     )
     await c.message.answer(context, reply_markup=btn, disable_web_page_preview=True)

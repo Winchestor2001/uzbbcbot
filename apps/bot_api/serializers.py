@@ -91,11 +91,17 @@ class ServiceStuffSerializer(ModelSerializer):
         model = models.ServiceStuff
         fields = '__all__'
 
+    @staticmethod
+    def get_comments_count(obj):
+        comments = models.ServiceRating.objects.filter(stuff=obj).count()
+        return comments
+
     def to_representation(self, instance):
         data = super(ServiceStuffSerializer, self).to_representation(instance)
         lang = self.context.get('lang')
         data['service'] = eval(f"instance.service.{lang}_name")
         data['city'] = eval(f"instance.city.{lang}_name")
+        data['comments'] = self.get_comments_count(instance)
         return data
 
 

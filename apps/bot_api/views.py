@@ -98,11 +98,12 @@ class SearchServiceAPIView(APIView):
         lang = request.GET['lang']
         offset = int(request.GET['offset'])
         user = models.TgUser.objects.get(user_id=int(user_id))
+        filtering_data = {f"service__{lang}_name": service, "lang": lang}
         if user.all_regions:
-            services = models.ServiceStuff.objects.filter(lang=lang).order_by('-rating')
+            services = models.ServiceStuff.objects.filter(**filtering_data).order_by('-rating')
         else:
-            services = models.ServiceStuff.objects.filter(lang=lang, city__in=user.city.all(), service__name=service).order_by('-rating')
-
+            services = models.ServiceStuff.objects.filter(city__in=user.city.all(), **filtering_data).order_by('-rating')
+    
         total_services = len(services)
         p = Paginator(services, limit)
         services = p.page(offset)
@@ -147,6 +148,7 @@ class StuffServiceAPIView(APIView):
         serializer_context = {'lang': lang}
         stuff_service = models.ServiceStuff.objects.get(id=stuff_id)
         serializer = ServiceStuffSerializer(instance=stuff_service, context=serializer_context)
+        print(serializer.data)
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 

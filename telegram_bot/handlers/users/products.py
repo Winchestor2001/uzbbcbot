@@ -76,7 +76,7 @@ async def staff_callback(c: CallbackQuery, state: FSMContext):
     product_info = await get_product_info(product_id)
     btn = await call_btn(lang, product_info['phone_number'], product_id, 'product')
     context = languages[lang]['product_info_text'].format(
-        product_info['fullname'], product_info['product'], product_info['rating'], product_info['from_price'],
+        product_info['fullname'], product_info['product'], product_info['rating'], product_info['comments'], product_info['from_price'],
         product_info['to_price'], product_info['city'], product_info['location_url'], product_info['description']
     )
     await c.message.answer(context, reply_markup=btn, disable_web_page_preview=True)

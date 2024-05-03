@@ -87,7 +87,7 @@ class ProductCategoryAdmin(ModelAdmin):
 
 @admin.register(models.ProductDetail)
 class ProductDetailAdmin(ModelAdmin):
-    list_display = ['id', 'fullname', 'product']
+    list_display = ['id', 'fullname', 'product', "lang"]
     list_display_links = ['fullname', 'product']
     readonly_fields = ['rating']
     ordering = ['-created_at']

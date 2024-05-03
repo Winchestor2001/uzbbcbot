@@ -93,10 +93,11 @@ async def user_region_state(message: Message, state: FSMContext):
         )
         await check_actions_inselect_regions(data, data['lang'], message, state)
     else:
-        await state.update_data(region=user_region)
         cities = await get_region_cities((await get_regions(data['lang'])), user_region)
         user_region = languages[data['lang']]['reply_button']['only_cities'].format(user_region)
         cities.insert(0, user_region)
+        await state.update_data(region=user_region)
+        await state.update_data(cities=cities)
         btn = await subs_btn(cities, data['lang'])
         await message.answer(languages[data['lang']]['choose_city_handler'], reply_markup=btn)
         await state.set_state(UserStates.city)
@@ -110,8 +111,7 @@ async def user_city_state(message: Message, state: FSMContext):
     if languages[data['lang']]['reply_button']['back_text'] == user_city:
         await state.set_state(None)
         await start_command(message, state)
-    elif data['region'] in user_city:
-        user_city = data['region']
+    elif user_city in data['cities']:
         await update_user_regions(
             user_id=message.from_user.id,
             city=user_city,
@@ -291,6 +291,7 @@ async def user_no_add_rating_callback(c: CallbackQuery, state: FSMContext):
 
 
 async def check_actions_inselect_regions(data, lang, message, state):
+
     if data['action'] == 'service':
         service_categories = await get_service_categories(lang)
         await state.update_data(service_categories=service_categories)
@@ -298,6 +299,7 @@ async def check_actions_inselect_regions(data, lang, message, state):
         btn = await choose_category_btn(lang, service_categories)
         await message.answer(context, reply_markup=btn)
         await state.set_state(UserStates.service_category)
+
     elif data['action'] == 'product':
         product_categories = await get_product_categories(lang)
         await state.update_data(product_categories=product_categories)
@@ -305,6 +307,7 @@ async def check_actions_inselect_regions(data, lang, message, state):
         btn = await choose_category_btn(lang, product_categories)
         await message.answer(context, reply_markup=btn)
         await state.set_state(UserStates.product_category)
+
     else:
         await state.set_state(None)
         await start_command(message, state)
