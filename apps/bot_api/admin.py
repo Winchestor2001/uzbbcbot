@@ -1,5 +1,8 @@
 from django.contrib import admin
 from django.contrib.auth.models import User, Group
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from unfold.admin import ModelAdmin
+from unfold.forms import AdminPasswordChangeForm, UserChangeForm, UserCreationForm
 from unfold.admin import ModelAdmin, TabularInline
 from django.http import HttpRequest
 from . import models
@@ -8,12 +11,6 @@ from django.db.models import QuerySet
 
 admin.site.site_header = "Bot Admin Panel"
 admin.site.site_title = "Bot Admin Panel"
-
-
-admin.site.unregister(User)
-admin.site.unregister(Group)
-admin.site.register(User, ModelAdmin)
-admin.site.register(Group, ModelAdmin)
 
 
 
@@ -52,7 +49,6 @@ class RegionAdmin(ModelAdmin):
     def set_visible(self, request, qs: QuerySet):
         qs.update(is_visible=True)
     
-
     @admin.action(description="Set False")
     def set_unvisible(self, request, qs: QuerySet):
         qs.update(is_visible=False)
@@ -68,11 +64,12 @@ class ServiceCategoryAdmin(ModelAdmin):
 
 @admin.register(models.ServiceStuff)
 class ServiceStuffAdmin(ModelAdmin):
-    list_display = ['id', 'fullname', 'city', 'service', 'price', 'rating']
+    list_display = ['id', 'fullname', 'city', 'service', 'price', 'rating', "lang"]
     list_display_links = ['fullname', 'city']
     readonly_fields = ['rating']
     ordering = ['-created_at']
     search_fields = ['fullname']
+    list_filter = ["city", "service", "lang"]
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
@@ -95,6 +92,7 @@ class ProductDetailAdmin(ModelAdmin):
     readonly_fields = ['rating']
     ordering = ['-created_at']
     search_fields = ['fullname']
+    list_filter = ["city", "product", "lang"]
 
 
 @admin.register(models.ServiceRating)
@@ -122,3 +120,15 @@ class AboutBotAdmin(ModelAdmin):
     def has_add_permission(self, request: HttpRequest) -> bool:
         count_obj = models.AboutBot.objects.count()
         return count_obj == 0
+    
+
+admin.site.unregister(User)
+admin.site.unregister(Group)
+admin.site.register(Group, ModelAdmin)
+
+
+@admin.register(User)
+class UserAdmin(BaseUserAdmin, ModelAdmin):
+    form = UserChangeForm
+    add_form = UserCreationForm
+    change_password_form = AdminPasswordChangeForm
