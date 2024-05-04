@@ -1,4 +1,5 @@
 from django.db import models
+from colorfield.fields import ColorField
 
 from core.settings import DB_LANGUAGES
 
@@ -48,6 +49,9 @@ class TgUser(CustomBaseModel):
 
     def __str__(self):
         return f"{self.user_id} - {self.username}"
+
+    def hide_username(self):
+        return "**" + self.username[2:]
 
 
 class ProductCategory(CustomBaseModel):
@@ -148,6 +152,14 @@ class AboutBot(CustomBaseModel):
     ru_description = models.TextField(blank=True, null=True)
     en_description = models.TextField(blank=True, null=True)
     comment_request_time = models.PositiveIntegerField(default=1)
+    comments_bg_color = ColorField(default='#fff')
+    comments_bg_card_color = ColorField(default='#212529')
+    comments_text_card_color = ColorField(default='#fff')
+    comments_datetime_color = ColorField(default='#6c757d')
+    comments_star_color = ColorField(default='#ffc107')
+    comments_message_color = ColorField(default='#fff')
+    comments_title_color = ColorField(default='#fff')
+
 
     def __str__(self):
         return "About Bot"

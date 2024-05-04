@@ -111,7 +111,7 @@ class ProductRatingAdmin(ModelAdmin):
 
 @admin.register(models.AboutBot)
 class AboutBotAdmin(ModelAdmin):
-
+    
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         form.base_fields['comment_request_time'].widget.attrs['placeholder'] = 'Only in minute'

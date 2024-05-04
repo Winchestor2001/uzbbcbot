@@ -48,6 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'bot_api',
     'celery_tasks',
+    'comments',
+    'colorfield',
     'rest_framework',
 ]
 

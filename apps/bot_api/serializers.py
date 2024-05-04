@@ -110,11 +110,6 @@ class StuffCommentsSerializer(ModelSerializer):
         model = models.ServiceRating
         fields = ['tg_user', 'comment', 'rating']
 
-    def to_representation(self, instance):
-        data = super(StuffCommentsSerializer, self).to_representation(instance)
-        data['tg_user'] = "**" + instance.tg_user.username[2:]
-        return data
-
 
 class ProductCategorySerializer(ModelSerializer):
     class Meta:
@@ -149,11 +144,6 @@ class ProductCommentsSerializer(ModelSerializer):
     class Meta:
         model = models.ProductRating
         fields = ['tg_user', 'comment']
-
-    def to_representation(self, instance):
-        data = super(ProductCommentsSerializer, self).to_representation(instance)
-        data['tg_user'] = "**" + instance.tg_user.username[2:]
-        return data
 
 
 class AboutBotSerializer(ModelSerializer):
