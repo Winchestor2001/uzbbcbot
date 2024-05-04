@@ -60,6 +60,7 @@ async def choose_language_btn():
 
 
 async def call_btn(lang: str, phone_number, stuff_id: int, type: str, user_id: int):
+    print(f"{COMMENTS_URL}?id={stuff_id}&type={type}&title={languages[lang]['comment_header']}")
     btn = InlineKeyboardMarkup(
         inline_keyboard=[
             [
@@ -70,7 +71,7 @@ async def call_btn(lang: str, phone_number, stuff_id: int, type: str, user_id: i
             [
                 InlineKeyboardButton(text=languages[lang]['reply_button']['comment_text'],
                                      web_app=WebAppInfo(
-                                         url=f"{COMMENTS_URL}/?id={stuff_id}&type={type}&header={languages[lang]['comment_header']}"))
+                                         url=f"{COMMENTS_URL}?id={stuff_id}&type={type}&title={languages[lang]['comment_header']}"))
             ]
         ]
     )
