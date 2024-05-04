@@ -65,7 +65,7 @@ async def service_state(message: Message, state: FSMContext):
             services['user'][
                 'city']
         context = await pagination_context_maker(
-            context=languages[lang]['find_text'].format(city, services['total_services']),
+            context=languages[lang]['find_text'].format(city, services['total_services'], services["services"][0]["service"]),
             data=services['services']
         )
         await message.answer("⏳", reply_markup=await start_command_btn(lang))

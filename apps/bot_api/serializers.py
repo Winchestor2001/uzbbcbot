@@ -99,8 +99,8 @@ class ServiceStuffSerializer(ModelSerializer):
     def to_representation(self, instance):
         data = super(ServiceStuffSerializer, self).to_representation(instance)
         lang = self.context.get('lang')
-        data['service'] = eval(f"instance.service.{lang}_name")
-        data['city'] = eval(f"instance.city.{lang}_name")
+        data['service'] = getattr(instance.service, f"{lang}_name", None)
+        data['city'] = getattr(instance.city, f"{lang}_name", None)
         data['comments'] = self.get_comments_count(instance)
         return data
 
