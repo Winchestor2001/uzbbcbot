@@ -50,7 +50,7 @@ async def product_state(message: Message, state: FSMContext):
     lang = data['lang']
 
     await state.update_data(service=message.text)
-    products = await search_products(user_id=user_id, product=message.text)
+    products = await search_products(user_id=user_id, product=message.text, lang=lang)
     if products['total_products']:
         city = languages[lang]['reply_button']['only_uzbekistan'] if products['user']['all_regions'] else \
         products['user'][

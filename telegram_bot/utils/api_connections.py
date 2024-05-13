@@ -123,8 +123,8 @@ async def get_product_categories(lang: str):
                 return []
 
 
-async def search_products(user_id: int, product: str, offset: int = 1):
-    params = {'user_id': user_id, 'offset': offset, 'product': product}
+async def search_products(user_id: int, product: str, lang: str, offset: int = 1):
+    params = {'user_id': user_id, 'offset': offset, 'product': product, "lang": lang}
     async with ClientSession() as session:
         async with session.get(f"{API_URL}/search_products/", params=params) as response:
             if response.status == 200:

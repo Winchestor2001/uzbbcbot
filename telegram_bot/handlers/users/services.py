@@ -84,7 +84,7 @@ async def prev_page_callback(c: CallbackQuery, state: FSMContext):
     page = int(c.data.split(':')[-1])
     data = await state.get_data()
     lang = data['lang']
-    services = await search_services(user_id=user_id, service=data['service'], offset=page)
+    services = await search_services(user_id=user_id, service=data['service'], offset=page, lang=lang)
     city = languages[lang]['reply_button']['only_uzbekistan'] if services['user']['all_regions'] else services['user'][
         'city']
     context = await pagination_context_maker(
