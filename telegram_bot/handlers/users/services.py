@@ -88,7 +88,7 @@ async def prev_page_callback(c: CallbackQuery, state: FSMContext):
     city = languages[lang]['reply_button']['only_uzbekistan'] if services['user']['all_regions'] else services['user']['city']
     
     context = await pagination_context_maker(
-        context=languages[lang]['find_text'].format(city, services['total_services']),
+        context=languages[lang]['find_text'].format(city, services['total_services'], services['services'][0]['service']),
         data=services['services']
     )
     if c.message.html_text != context.strip():

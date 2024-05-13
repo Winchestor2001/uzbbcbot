@@ -56,7 +56,7 @@ async def product_state(message: Message, state: FSMContext):
         products['user'][
             'city']
         context = await pagination_context_maker(
-            context=languages[lang]['find_text'].format(city, products['total_products']),
+            context=languages[lang]['find_text'].format(city, products['total_products'], products['products'][0]['product']),
             data=products['products']
         )
         await message.answer("⏳", reply_markup=await start_command_btn(lang))
