@@ -244,13 +244,14 @@ class SearchAPIView(APIView):
         q = request.GET.get('q')
         user = models.TgUser.objects.get(user_id=request.GET['user_id'])
         query = {f"service__{user.language}_name__icontains": q}
-        services = models.ServiceStuff.objects.filter(**query).filter(city__in=user.city.all())
+        services = models.ServiceStuff.objects.filter(**query)
         if services.exists():
             serializer = ServiceStuffSerializer(instance=services, many=True)
             serializer = sort_subcategory(serializer.data, 'service')
             return Response({"result": serializer, "to_state": "service"}, status=status.HTTP_200_OK)
         else:
-            products = models.ProductDetail.objects.filter(product__name__icontains=q).filter(city__in=user.city.all())
+            query = {f"product__{user.language}_name__icontains": q}
+            products = models.ProductDetail.objects.filter(**query)
             serializer = ProductDetailSerializer(instance=products, many=True)
             serializer = sort_subcategory(serializer.data, 'product')
             return Response({"result": serializer, "to_state": "product"}, status=status.HTTP_200_OK)
