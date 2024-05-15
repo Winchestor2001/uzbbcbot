@@ -18,7 +18,7 @@ class CommentsTemplateView(TemplateView):
         elif _type == 'product':
             comments = ProductRating.objects.filter(product_detail__id=_id).order_by('-created_at')
         else:
-            raise HttpResponseBadRequest()
+            raise ValueError("Invalid _type parameter. It must be 'service' or 'product'.")
         kwargs['comments'] = comments
         kwargs['configs'] = configs
         kwargs['title'] = title

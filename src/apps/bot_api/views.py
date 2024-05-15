@@ -243,7 +243,8 @@ class SearchAPIView(APIView):
     def get(self, request, *args, **kwargs):
         q = request.GET.get('q')
         user = models.TgUser.objects.get(user_id=request.GET['user_id'])
-        services = models.ServiceStuff.objects.filter(service__name__icontains=q).filter(city__in=user.city.all())
+        query = {f"service__{user.language}_name__icontains": q}
+        services = models.ServiceStuff.objects.filter(**query).filter(city__in=user.city.all())
         if services.exists():
             serializer = ServiceStuffSerializer(instance=services, many=True)
             serializer = sort_subcategory(serializer.data, 'service')
