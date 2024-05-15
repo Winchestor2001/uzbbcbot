@@ -5,7 +5,6 @@ from bot_api.models import ServiceRating, ProductRating, AboutBot
 from django.http.response import HttpResponseBadRequest
 
 
-
 class CommentsTemplateView(TemplateView):
     template_name = "comments.html"
 
@@ -24,4 +23,3 @@ class CommentsTemplateView(TemplateView):
         kwargs['configs'] = configs
         kwargs['title'] = title
         return super().get_context_data(**kwargs)
-
