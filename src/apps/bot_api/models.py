@@ -1,7 +1,7 @@
 from django.db import models
 from colorfield.fields import ColorField
 
-from core.settings import DB_LANGUAGES
+from src.core.settings import DB_LANGUAGES
 
 
 class CustomBaseModel(models.Model):
@@ -10,6 +10,8 @@ class CustomBaseModel(models.Model):
     
     class Meta:
         abstract = True
+
+    objects = models.Manager()
 
 
 class Region(CustomBaseModel):
@@ -160,8 +162,6 @@ class AboutBot(CustomBaseModel):
     comments_message_color = ColorField(default='#fff')
     comments_title_color = ColorField(default='#fff')
 
-
     def __str__(self):
         return "About Bot"
-
     

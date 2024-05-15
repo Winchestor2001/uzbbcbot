@@ -1,6 +1,4 @@
-import datetime
-
-from django.db.models.signals import pre_save, post_save, post_delete
+from django.db.models.signals import post_save, post_delete
 from django.dispatch import receiver
 from . import models
 from .utils import count_ratings

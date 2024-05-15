@@ -1,7 +1,7 @@
 from django.conf import settings
 from rest_framework.serializers import ModelSerializer
 
-from core.settings import DOMAIN
+from src.core.settings import DOMAIN
 from . import models
 from .utils import count_ratings
 
@@ -150,7 +150,7 @@ class AboutBotSerializer(ModelSerializer):
     class Meta:
         model = models.AboutBot
         fields = ['uz_video', 'ru_video', 'en_video', 'uz_description', 'ru_description', 'en_description']
-    
+
     def to_representation(self, instance):
         redata = super().to_representation(instance)
         redata['uz_video'] = DOMAIN + instance.video.url

@@ -5,14 +5,20 @@ from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from bot_api.serializers import AboutBotSerializer, CitySerializer, TelegramUserSerializer, RegionsSerializer, ServiceSerializer, ServiceCategorySerializer, \
-    ServiceStuffSerializer, StuffCommentsSerializer, ProductCategorySerializer, ProductDetailSerializer, \
-    ProductCommentsSerializer
+from src.apps.bot_api.serializers import (
+    AboutBotSerializer, CitySerializer, TelegramUserSerializer,
+    RegionsSerializer, ServiceCategorySerializer,
+    ServiceStuffSerializer, StuffCommentsSerializer, ProductCategorySerializer,
+    ProductDetailSerializer, ProductCommentsSerializer
+)
 from . import models
-from .utils import extract_excel_service, extract_excel_product, service_data_save_to_db, product_data_save_to_db, sort_subcategory
+from .utils import (
+    extract_excel_service, extract_excel_product,
+    service_data_save_to_db, product_data_save_to_db,
+    sort_subcategory
+)
 from django.core.paginator import Paginator
-from celery_tasks.models import NotifyTasks
-
+from src.apps.celery_tasks.models import NotifyTasks
 
 logger = logging.getLogger('django')
 
@@ -102,8 +108,9 @@ class SearchServiceAPIView(APIView):
         if user.all_regions:
             services = models.ServiceStuff.objects.filter(**filtering_data).order_by('-rating')
         else:
-            services = models.ServiceStuff.objects.filter(city__in=user.city.all(), **filtering_data).order_by('-rating')
-    
+            services = models.ServiceStuff.objects.filter(city__in=user.city.all(), **filtering_data).order_by(
+                '-rating')
+
         total_services = len(services)
         p = Paginator(services, limit)
         services = p.page(offset)
@@ -194,10 +201,12 @@ class SearchProductAPIView(APIView):
         if user.all_regions:
             products = models.ProductDetail.objects.filter(lang=lang).order_by('-rating')
         else:
-            products = models.ProductDetail.objects.filter(lang=lang, city__in=user.city.all(), product__name=product).order_by('-rating')
+            products = models.ProductDetail.objects.filter(lang=lang, city__in=user.city.all(),
+                                                           product__name=product).order_by('-rating')
         total_products = len(products)
         serializer_context = {"lang": lang}
-        serializer = ProductDetailSerializer(instance=products[offset:offset + limit], many=True, context=serializer_context)
+        serializer = ProductDetailSerializer(instance=products[offset:offset + limit], many=True,
+                                             context=serializer_context)
         user_serizlier = TelegramUserSerializer(instance=user)
         return Response({'products': serializer.data, 'user': user_serizlier.data, 'total_products': total_products},
                         status=status.HTTP_200_OK)
@@ -264,7 +273,7 @@ class AboutBotAPIView(APIView):
         about_bot = models.AboutBot.objects.first()
         serializer = AboutBotSerializer(instance=about_bot)
         return Response(serializer.data, status=status.HTTP_200_OK)
-    
+
 
 class GetCities(generics.ListAPIView):
     queryset = models.City
@@ -285,7 +294,7 @@ def get_service_excel(request):
         city = request.POST.get("city")
         data = extract_excel_service(file, city, lang)
         service_data_save_to_db(data)
-        
+
     return redirect('/admin/')
 
 
