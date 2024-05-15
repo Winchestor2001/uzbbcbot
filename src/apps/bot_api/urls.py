@@ -1,7 +1,6 @@
 from django.urls import path
 from . import views
 
-
 urlpatterns = [
     path('add_user/', views.TelegramUserCreateAPIView.as_view()),
     path('user_info/<int:user_id>/', views.TelegramUserCreateAPIView.as_view()),
@@ -21,8 +20,7 @@ urlpatterns = [
     path('get_cities/', views.GetCities.as_view(), name="cities-api"),
 
     path('call/', views.CallAPIView.as_view()),
-    
+
     path('get_service_excel/', views.get_service_excel, name="get_service_excel"),
     path('get_product_excel/', views.get_product_excel, name="get_product_excel"),
 ]
-

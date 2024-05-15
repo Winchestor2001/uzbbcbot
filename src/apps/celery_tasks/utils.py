@@ -1,7 +1,6 @@
 import requests
 from environs import Env
 import json
-from datetime import datetime
 
 env = Env()
 env.read_env()

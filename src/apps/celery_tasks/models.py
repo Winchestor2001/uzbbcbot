@@ -1,5 +1,5 @@
 from django.db import models
-from bot_api.models import TgUser, ServiceStuff, ProductDetail, CustomBaseModel
+from src.apps.bot_api.models import TgUser, ServiceStuff, ProductDetail, CustomBaseModel
 
 
 class NotifyTasks(CustomBaseModel):

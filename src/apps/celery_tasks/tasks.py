@@ -5,7 +5,6 @@ from .models import NotifyTasks, ServiceStuff, ProductDetail
 from .utils import send_message_to_user
 from subprocess import run
 
-
 logging.basicConfig(
     level=logging.INFO,
     format='[%(asctime)s] | %(levelname)s: %(message)s',

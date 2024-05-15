@@ -1,17 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from unfold.admin import ModelAdmin
 from unfold.forms import AdminPasswordChangeForm, UserChangeForm, UserCreationForm
 from unfold.admin import ModelAdmin, TabularInline
 from django.http import HttpRequest
 from . import models
 from django.db.models import QuerySet
 
-
 admin.site.site_header = "Bot Admin Panel"
 admin.site.site_title = "Bot Admin Panel"
-
 
 
 class CityInline(TabularInline):
@@ -48,7 +45,7 @@ class RegionAdmin(ModelAdmin):
     @admin.action(description="Set True")
     def set_visible(self, request, qs: QuerySet):
         qs.update(is_visible=True)
-    
+
     @admin.action(description="Set False")
     def set_unvisible(self, request, qs: QuerySet):
         qs.update(is_visible=False)
@@ -111,7 +108,7 @@ class ProductRatingAdmin(ModelAdmin):
 
 @admin.register(models.AboutBot)
 class AboutBotAdmin(ModelAdmin):
-    
+
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         form.base_fields['comment_request_time'].widget.attrs['placeholder'] = 'Only in minute'
@@ -120,7 +117,7 @@ class AboutBotAdmin(ModelAdmin):
     def has_add_permission(self, request: HttpRequest) -> bool:
         count_obj = models.AboutBot.objects.count()
         return count_obj == 0
-    
+
 
 admin.site.unregister(User)
 admin.site.unregister(Group)

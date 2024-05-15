@@ -46,7 +46,7 @@ def count_ratings(ratings):
         for rating in ratings:
             voted_stars += rating.rating * 10
         return round(voted_stars / 10 / voted, 1)
-    return 0.0  
+    return 0.0
 
 
 def sort_subcategory(obj: list, action: str):
@@ -54,7 +54,7 @@ def sort_subcategory(obj: list, action: str):
 
     for item in obj:
         result.append(item[action])
-    
+
     return list(set(result))
 
 
@@ -74,11 +74,10 @@ def extract_excel_product(file, city, lang):
 
 def excel_to_bytesio(excel_file):
     df = pd.read_excel(excel_file)
-    
+
     bytes_io = BytesIO()
     df.to_excel(bytes_io, index=False)
-    bytes_io.seek(0)
-    
+
     return bytes_io
 
 
@@ -130,4 +129,3 @@ def product_data_save_to_db(data: list):
         ProductDetail.objects.create(
             **item
         )
-
