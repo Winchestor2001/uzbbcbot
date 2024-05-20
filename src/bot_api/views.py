@@ -5,7 +5,7 @@ from rest_framework import generics, status, permissions
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from src.apps.bot_api.serializers import (
+from .serializers import (
     AboutBotSerializer, CitySerializer, TelegramUserSerializer,
     RegionsSerializer, ServiceCategorySerializer,
     ServiceStuffSerializer, StuffCommentsSerializer, ProductCategorySerializer,
@@ -18,7 +18,7 @@ from .utils import (
     sort_subcategory
 )
 from django.core.paginator import Paginator
-from src.apps.celery_tasks.models import NotifyTasks
+from celery_tasks.models import NotifyTasks
 
 logger = logging.getLogger('django')
 

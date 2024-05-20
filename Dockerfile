@@ -1,10 +1,19 @@
 FROM python:3.10.12
+
 ENV PYTHONUNBUFFERED 1
-RUN mkdir /uzbbcbot
 
-WORKDIR /uzbbcbot
-COPY requirements.txt /uzbbcbot/
+WORKDIR /src
 
-RUN pip install --no-cache-dir -r requirements.txt && apt update
+COPY requirements.txt /src/requirements.txt
 
-COPY . /uzbbcbot/
+RUN apt-get update && apt-get install -y \
+    postgresql-client \
+    build-essential \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY src /src
+
+EXPOSE 8000

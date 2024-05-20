@@ -2,79 +2,92 @@ version: '3'
 
 services:
   db:
-    image: postgres
+    image: postgres:14
+    container_name: uzbbcbot_db
     restart: always
-    env_file:
-      - .env
-    ports:
-      - "15432:5432"
-
-  redis:
-    image: redis:rc-alpine3.12
-    restart: always
-    ports:
-      - "16379:6379"
-
-  web:
-    build: .
-    image: uzbbcbot:latest
-    command: >
-      sh -c "python manage.py makemigrations && \
-        python manage.py migrate && \
-        python manage.py runserver 0.0.0.0:8000"
-
     env_file:
       - .env
     environment:
-      PYTHONPATH: /uzbbcbot
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    ports:
+      - "${DB_PORT}:5432"
+#    volumes:
+#      - ./data:/var/lib/postgresql/data
+
+  redis:
+    image: redis:rc-alpine3.12
+    container_name: redis_db
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - "${REDIS_PORT}:6379"
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: django_drf
+    restart: always
+    command: >
+      sh -c "python manage.py makemigrations && python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    env_file:
+      - .env
     volumes:
-      - .:/uzbbcbot
-      - static_volume:/uzbbcbot/static/
-      - media_volume:/uzbbcbot/media/
+      - ./src:/src
+      - static_volume:/src/static/
+      - media_volume:/src/media/
     ports:
       - "8000:8000"
     depends_on:
       - db
 
   celery:
-    image: uzbbcbot:latest
-    restart: always
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: celery_app
     env_file:
       - .env
-    command: celery -A core worker -l info
+    entrypoint: celery
+    command: -A core worker -l info
     volumes:
-      - .:/uzbbcbot
+      - ./src:/src
+    links:
+      - redis
     depends_on:
-      - web
       - redis
 
   celery-beat:
-    image: uzbbcbot:latest
-    restart: always
-    build: .
+    container_name: celery_beat_app
+    build:
+      context: .
+      dockerfile: Dockerfile
     env_file:
       - .env
     command: celery -A core beat -l info
     volumes:
-      - .:/uzbbcbot
-    depends_on:
-      - web
+      - ./src:/src
 
   bot:
-    image: uzbbcbot:latest
-    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile.bot
+    container_name: tg_bot
     env_file:
       - .env
     command: python3 telegram_bot/app.py
-    environment:
-      PYTHONPATH: /uzbbcbot
-    volumes:
-      - .:/uzbbcbot
+    links:
+      - redis
     depends_on:
       - web
       - redis
+    volumes:
+      - ./:/app
 
 volumes:
   static_volume:
   media_volume:
+#  uzbbcbot-db-data:

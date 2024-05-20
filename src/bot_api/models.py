@@ -1,7 +1,7 @@
 from django.db import models
 from colorfield.fields import ColorField
 
-from src.core.settings import DB_LANGUAGES
+from core.settings import DB_LANGUAGES
 
 
 class CustomBaseModel(models.Model):

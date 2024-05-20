@@ -1,9 +1,7 @@
-from django.conf import settings
 from rest_framework.serializers import ModelSerializer
 
-from src.core.settings import DOMAIN
+from core.settings import DOMAIN
 from . import models
-from .utils import count_ratings
 
 
 class CitySerializer(ModelSerializer):

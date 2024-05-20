@@ -14,6 +14,7 @@ app.autodiscover_tasks()
 
 django.setup()
 from bot_api.models import AboutBot
+
 try:
     minute = AboutBot.objects.first().comment_request_time
 except:
