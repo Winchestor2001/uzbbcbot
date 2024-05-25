@@ -146,7 +146,10 @@ async def about_handler(message: Message, state: FSMContext):
     data = await state.get_data()
     lang = data['lang']
     info = await get_about_bot()
-    await message.answer_video(info[f'{lang}_video'], caption=info[f'{lang}_description'])
+    if info[f'{lang}_video']:
+        await message.answer_video(info[f'{lang}_video'], caption=info[f'{lang}_description'])
+    else:
+        await message.answer(info[f'{lang}_description'])
 
 
 @router.message(BtnLangCheck('admin_text'))
