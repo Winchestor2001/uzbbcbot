@@ -17,6 +17,6 @@ async def on_startup():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(level=logging.INFO, stream=sys.stdout)
+    logging.basicConfig(filename="src/logs/bot_error.log", level=logging.INFO, stream=sys.stdout)
     asyncio.run(on_startup())
 
