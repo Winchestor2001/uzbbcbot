@@ -1,7 +1,12 @@
+import logging
+
 from rest_framework.serializers import ModelSerializer
 
 from core.settings import DOMAIN
 from . import models
+
+
+logger = logging.getLogger('django')
 
 
 class CitySerializer(ModelSerializer):
@@ -151,7 +156,7 @@ class AboutBotSerializer(ModelSerializer):
 
     def to_representation(self, instance):
         redata = super().to_representation(instance)
-        redata['uz_video'] = DOMAIN + instance.video.url
-        redata['ru_video'] = DOMAIN + instance.video.url
-        redata['en_video'] = DOMAIN + instance.video.url
+        redata['uz_video'] = DOMAIN + instance.uz_video.url
+        redata['ru_video'] = DOMAIN + instance.ru_video.url
+        redata['en_video'] = DOMAIN + instance.en_video.url
         return redata

@@ -49,6 +49,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: celery_app
+    restart: always
     env_file:
       - .env
     entrypoint: celery
@@ -62,6 +63,7 @@ services:
 
   celery-beat:
     container_name: celery_beat_app
+    restart: always
     build:
       context: .
       dockerfile: Dockerfile
@@ -76,6 +78,7 @@ services:
       context: .
       dockerfile: Dockerfile.bot
     container_name: tg_bot
+    restart: always
     env_file:
       - .env
     command: python3 telegram_bot/app.py

@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from colorfield.fields import ColorField
 
@@ -7,7 +8,7 @@ from core.settings import DB_LANGUAGES
 class CustomBaseModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    
+
     class Meta:
         abstract = True
 
@@ -164,4 +165,3 @@ class AboutBot(CustomBaseModel):
 
     def __str__(self):
         return "About Bot"
-    
