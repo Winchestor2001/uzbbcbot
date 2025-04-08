@@ -1,7 +1,7 @@
 # Makefile для управления проектом uzbbcbot
 
 # Переменные
-COMPOSE=docker-compose
+COMPOSE=docker compose
 PROJECT_NAME=uzbbcbot
 DJANGO_CONTAINER=django_drf
 BOT_CONTAINER=tg_bot
