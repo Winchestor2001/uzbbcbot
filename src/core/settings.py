@@ -208,8 +208,10 @@ CELERY_RESULT_SERIALIZER = env.str("CELERY_RESULT_SERIALIZER")
 CORS_ALLOW_ALL_ORIGINS = True
 
 
-# if not os.path.exists('logs'):
-#     os.makedirs('logs', exist_ok=True)
+log_path = env.str('WEB_LOG_PATH', default=str(BASE_DIR / 'logs/web_error.log'))
+
+log_dir = os.path.dirname(log_path)
+os.makedirs(log_dir, exist_ok=True)
 
 LOGGING = {
     'version': 1,
@@ -225,7 +227,7 @@ LOGGING = {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'formatter': 'verbose',
-            'filename': env.str('WEB_LOG_PATH'),
+            'filename': log_path,
         },
         'console': {
             'level': 'DEBUG',
