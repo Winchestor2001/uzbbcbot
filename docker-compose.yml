@@ -12,7 +12,7 @@ services:
     ports:
       - "${POSTGRES_PORT}:5432"
     volumes:
-      - ./pgdata:/var/lib/postgresql/data
+      - ./uzbbcbot-db-data:/var/lib/postgresql/data
 
   redis:
     image: redis:rc-alpine3.12
