@@ -35,8 +35,6 @@ services:
       - .env
     volumes:
       - ./src:/src
-      - static_volume:/src/static/
-      - media_volume:/src/media/
       - ./logs:/app/logs
     ports:
       - "8000:8000"
