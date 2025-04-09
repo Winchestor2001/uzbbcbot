@@ -39,7 +39,7 @@ createsuperuser:
 	$(COMPOSE) exec $(DJANGO_CONTAINER) python manage.py createsuperuser
 
 bash:
-	$(COMPOSE) exec $(DJANGO_CONTAINER) python manage.py /bin/bash
+	$(COMPOSE) exec $(DJANGO_CONTAINER) /bin/bash
 
 collectstatic:
 	$(COMPOSE) exec $(DJANGO_CONTAINER) python manage.py collectstatic --noinput
