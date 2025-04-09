@@ -3,7 +3,7 @@
 # Переменные
 COMPOSE=docker compose
 PROJECT_NAME=uzbbcbot
-DJANGO_CONTAINER=django_drf
+DJANGO_CONTAINER=web
 BOT_CONTAINER=tg_bot
 
 # Команды Docker Compose
@@ -38,15 +38,15 @@ makemigrations:
 createsuperuser:
 	$(COMPOSE) exec $(DJANGO_CONTAINER) python manage.py createsuperuser
 
-shell:
-	$(COMPOSE) exec $(DJANGO_CONTAINER) python manage.py shell
+bash:
+	$(COMPOSE) exec $(DJANGO_CONTAINER) python manage.py /bin/bash
 
 collectstatic:
 	$(COMPOSE) exec $(DJANGO_CONTAINER) python manage.py collectstatic --noinput
 
 # Очистка
-prune:
-	docker system prune -af --volumes
+clean:
+	$(COMPOSE) down -v --rmi local --remove-orphans
 
 # Перезапуск бота
 restart-bot:
